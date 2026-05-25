@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>公共设施报修 - 物业服务</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/user.css}">
+</head>
+<body>
+    <div class="navbar">
+        <h1>公共设施报修</h1>
+    </div>
+    
+    <div class="container">
+        <p>请详细描述您发现的设施损坏情况，以便我们尽快安排人员维修。</p>
+        
+        <form th:action="@{/report}" th:object="${repairRequest}" method="post">
+            <div class="form-group">
+                <label for="submitterName">您的姓名</label>
+                <input type="text" id="submitterName" th:field="*{submitterName}" required placeholder="请输入您的姓名">
+            </div>
+            
+            <div class="form-group">
+                <label for="contactPhone">联系电话</label>
+                <input type="text" id="contactPhone" th:field="*{contactPhone}" required placeholder="请输入联系电话">
+            </div>
+            
+            <div class="form-group">
+                <label for="facilityDescription">损坏情况描述</label>
+                <textarea id="facilityDescription" th:field="*{facilityDescription}" required placeholder="请说明损坏设施的位置和具体情况，例如：3栋1单元电梯按钮不灵敏"></textarea>
+            </div>
+            
+            <button type="submit" class="btn-primary">提交报修</button>
+        </form>
+        
+        <a th:href="@{/}" class="back-link">&larr; 返回首页</a>
+    </div>
+</body>
+</html>

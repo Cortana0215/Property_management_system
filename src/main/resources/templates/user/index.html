@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>住户端 - 物业服务</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/user.css}">
+</head>
+<body>
+    <div class="navbar">
+        <h1>智慧小区服务平台</h1>
+        <div style="text-align: right; padding-right: 20px;">
+            <a th:href="@{/logout}" style="color: #e74c3c; text-decoration: none; font-size: 14px;">退出登录</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>欢迎您, <span th:text="${session.loggedInUser.name}">住户</span></h2>
+        <p>房号: <span th:text="${session.loggedInUser.apartmentNumber}">未知</span></p>
+        <p>请选择您需要的服务：</p>
+        
+        <div class="action-menu">
+            <a th:href="@{/report}" class="action-card">
+                <h3>公共设施报修</h3>
+                <p>提交小区公共区域设备损坏、设施故障等问题</p>
+            </a>
+            <div class="action-card" style="opacity: 0.6; cursor: not-allowed;">
+                <h3>我的账单 (开发中)</h3>
+                <p>查看并缴纳物业费、停车费等</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

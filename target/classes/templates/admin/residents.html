@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>物业管理后台 - 住户管理</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>物业管理系统</h2>
+        <a th:href="@{/admin/dashboard}">仪表盘</a>
+        <a th:href="@{/admin/residents}">住户信息管理</a>
+        <a th:href="@{/admin/repairs}">报修任务管理</a>
+        <a th:href="@{/}" target="_blank">查看住户端</a>
+        <a th:href="@{/admin/logout}" style="margin-top: 50px; background-color: #c0392b;">退出登录</a>
+    </div>
+
+    <div class="content">
+        <h1>住户信息管理</h1>
+        
+        <div class="form-container">
+            <h3>添加新住户</h3>
+            <form th:action="@{/admin/residents/add}" method="post">
+                <input type="text" name="name" placeholder="姓名" required>
+                <input type="text" name="phone" placeholder="联系电话" required>
+                <input type="text" name="apartmentNumber" placeholder="房号 (例如: 3栋2单元401)" required>
+                <input type="text" name="username" placeholder="登录账号" required>
+                <input type="password" name="password" placeholder="登录密码" required>
+                <button type="submit" class="btn">添加</button>
+            </form>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>姓名</th>
+                    <th>联系电话</th>
+                    <th>房号</th>
+                    <th>登录账号</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="resident : ${residents}">
+                    <td th:text="${resident.id}">1</td>
+                    <td th:text="${resident.name}">张三</td>
+                    <td th:text="${resident.phone}">13800138000</td>
+                    <td th:text="${resident.apartmentNumber}">3栋2单元401</td>
+                    <td th:text="${resident.username}">zhangsan</td>
+                    <td>
+                        <form th:action="@{/admin/residents/delete/{id}(id=${resident.id})}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('确定要删除吗？')">删除</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

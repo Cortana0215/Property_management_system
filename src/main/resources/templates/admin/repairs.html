@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>物业管理后台 - 报修管理</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>物业管理系统</h2>
+        <a th:href="@{/admin/dashboard}">仪表盘</a>
+        <a th:href="@{/admin/residents}">住户信息管理</a>
+        <a th:href="@{/admin/repairs}">报修任务管理</a>
+        <a th:href="@{/}" target="_blank">查看住户端</a>
+        <a th:href="@{/admin/logout}" style="margin-top: 50px; background-color: #c0392b;">退出登录</a>
+    </div>
+
+    <div class="content">
+        <h1>公共设施报修管理</h1>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>提交时间</th>
+                    <th>报修人</th>
+                    <th>联系电话</th>
+                    <th>问题描述</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="repair : ${repairs}">
+                    <td th:text="${repair.id}">1</td>
+                    <td th:text="${#temporals.format(repair.submitTime, 'yyyy-MM-dd HH:mm')}">2026-05-25 10:00</td>
+                    <td th:text="${repair.submitterName}">李四</td>
+                    <td th:text="${repair.contactPhone}">13900139000</td>
+                    <td th:text="${repair.facilityDescription}">走廊灯坏了</td>
+                    <td>
+                        <span th:if="${repair.status == 'PENDING'}" style="color: #e67e22; font-weight: bold;">待处理</span>
+                        <span th:if="${repair.status == 'IN_PROGRESS'}" style="color: #3498db; font-weight: bold;">维修中</span>
+                        <span th:if="${repair.status == 'RESOLVED'}" style="color: #2ecc71; font-weight: bold;">已解决</span>
+                    </td>
+                    <td>
+                        <form th:action="@{/admin/repairs/update/{id}(id=${repair.id})}" method="post" style="display:inline;" th:if="${repair.status == 'PENDING'}">
+                            <input type="hidden" name="status" value="IN_PROGRESS">
+                            <button type="submit" class="btn btn-success">派工维修</button>
+                        </form>
+                        <form th:action="@{/admin/repairs/update/{id}(id=${repair.id})}" method="post" style="display:inline;" th:if="${repair.status == 'IN_PROGRESS'}">
+                            <input type="hidden" name="status" value="RESOLVED">
+                            <button type="submit" class="btn">标记为已解决</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>报修成功</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/user.css}">
+</head>
+<body>
+    <div class="navbar">
+        <h1>提交成功</h1>
+    </div>
+    
+    <div class="container success-message">
+        <h2>✓ 提交成功</h2>
+        <p th:text="${message}">报修提交成功！物业人员将尽快处理。</p>
+        <a th:href="@{/}" class="back-link">返回首页</a>
+    </div>
+</body>
+</html>
