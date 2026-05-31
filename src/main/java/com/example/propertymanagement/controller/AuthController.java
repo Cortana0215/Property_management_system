@@ -2,8 +2,10 @@ package com.example.propertymanagement.controller;
 
 import com.example.propertymanagement.entity.Admin;
 import com.example.propertymanagement.entity.Resident;
+import com.example.propertymanagement.entity.Staff;
 import com.example.propertymanagement.repository.AdminRepository;
 import com.example.propertymanagement.repository.ResidentRepository;
+import com.example.propertymanagement.repository.StaffRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,11 +24,17 @@ public class AuthController {
     private ResidentRepository residentRepository;
 
     @Autowired
-    private com.example.propertymanagement.repository.StaffRepository staffRepository;
+    private StaffRepository staffRepository;
 
     @GetMapping("/login")
     public String loginForm() {
         return "login";
+    }
+
+    // Redirect legacy URLs to the new unified login
+    @GetMapping({"/admin/login", "/user/login"})
+    public String legacyLoginRedirect() {
+        return "redirect:/login";
     }
 
     @PostMapping("/login")
@@ -49,7 +57,7 @@ public class AuthController {
                 return "redirect:/";
             }
         } else if ("STAFF".equals(role)) {
-            com.example.propertymanagement.entity.Staff staff = staffRepository.findByUsername(username);
+            Staff staff = staffRepository.findByUsername(username);
             if (staff != null && staff.getPassword().equals(password)) {
                 session.setAttribute("loggedInStaff", staff);
                 session.setAttribute("role", "STAFF");

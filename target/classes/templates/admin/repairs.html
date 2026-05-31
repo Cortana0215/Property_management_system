@@ -4,53 +4,76 @@
     <meta charset="UTF-8">
     <title>物业管理后台 - 报修管理</title>
     <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <style>
+        .image-preview {
+            max-width: 100px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .feedback-box {
+            background: #f9f9f9;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 <body>
     <div class="sidebar">
         <h2>物业管理系统</h2>
         <a th:href="@{/admin/dashboard}">仪表盘</a>
         <a th:href="@{/admin/residents}">住户信息管理</a>
+        <a th:href="@{/admin/staff}">职工信息管理</a>
+        <a th:href="@{/admin/admins}">管理员账号管理</a>
         <a th:href="@{/admin/repairs}">报修任务管理</a>
-        <a th:href="@{/}" target="_blank">查看住户端</a>
-        <a th:href="@{/admin/logout}" style="margin-top: 50px; background-color: #c0392b;">退出登录</a>
+        <a th:href="@{/logout}" style="margin-top: 50px; background-color: #c0392b;">退出登录</a>
     </div>
 
     <div class="content">
-        <h1>公共设施报修管理</h1>
+        <h1>报修任务管理</h1>
 
         <table>
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>提交时间</th>
-                    <th>报修人</th>
-                    <th>联系电话</th>
-                    <th>问题描述</th>
+                    <th>报修信息</th>
                     <th>状态</th>
-                    <th>操作</th>
+                    <th>指派/处理</th>
+                    <th>反馈结果</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="repair : ${repairs}">
                     <td th:text="${repair.id}">1</td>
-                    <td th:text="${#temporals.format(repair.submitTime, 'yyyy-MM-dd HH:mm')}">2026-05-25 10:00</td>
-                    <td th:text="${repair.submitterName}">李四</td>
-                    <td th:text="${repair.contactPhone}">13900139000</td>
-                    <td th:text="${repair.facilityDescription}">走廊灯坏了</td>
                     <td>
-                        <span th:if="${repair.status == 'PENDING'}" style="color: #e67e22; font-weight: bold;">待处理</span>
-                        <span th:if="${repair.status == 'IN_PROGRESS'}" style="color: #3498db; font-weight: bold;">维修中</span>
-                        <span th:if="${repair.status == 'RESOLVED'}" style="color: #2ecc71; font-weight: bold;">已解决</span>
+                        <strong th:text="${repair.submitterName}">李四</strong> (<span th:text="${repair.contactPhone}"></span>)<br>
+                        <span th:text="${repair.facilityDescription}">走廊灯坏了</span><br>
+                        <img th:if="${repair.imagePath}" th:src="${repair.imagePath}" class="image-preview" onclick="window.open(this.src)">
                     </td>
                     <td>
-                        <form th:action="@{/admin/repairs/update/{id}(id=${repair.id})}" method="post" style="display:inline;" th:if="${repair.status == 'PENDING'}">
-                            <input type="hidden" name="status" value="IN_PROGRESS">
-                            <button type="submit" class="btn btn-success">派工维修</button>
+                        <span th:if="${repair.status == 'PENDING'}" style="color: #e67e22; font-weight: bold;">待处理</span>
+                        <span th:if="${repair.status == 'ASSIGNED'}" style="color: #3498db; font-weight: bold;">已指派给: <span th:text="${repair.staffName}"></span></span>
+                        <span th:if="${repair.status == 'COMPLETED'}" style="color: #2ecc71; font-weight: bold;">已完成</span>
+                    </td>
+                    <td>
+                        <form th:if="${repair.status == 'PENDING'}" th:action="@{/admin/repairs/assign/{id}(id=${repair.id})}" method="post">
+                            <select name="staffId" required style="padding: 5px; margin-bottom: 5px; display: block;">
+                                <option value="">选择职工</option>
+                                <option th:each="staff : ${staffList}" th:value="${staff.id}" th:text="${staff.name}"></option>
+                            </select>
+                            <button type="submit" class="btn btn-success" style="width: 100%;">指派职工</button>
                         </form>
-                        <form th:action="@{/admin/repairs/update/{id}(id=${repair.id})}" method="post" style="display:inline;" th:if="${repair.status == 'IN_PROGRESS'}">
-                            <input type="hidden" name="status" value="RESOLVED">
-                            <button type="submit" class="btn">标记为已解决</button>
+                        <form th:if="${repair.status == 'ASSIGNED'}" th:action="@{/admin/repairs/update/{id}(id=${repair.id})}" method="post">
+                            <input type="hidden" name="status" value="PENDING">
+                            <button type="submit" class="btn" style="width: 100%;">撤回指派</button>
                         </form>
+                    </td>
+                    <td>
+                        <div th:if="${repair.staffFeedbackText}" class="feedback-box">
+                            <p th:text="${repair.staffFeedbackText}"></p>
+                            <img th:if="${repair.staffFeedbackImage}" th:src="${repair.staffFeedbackImage}" class="image-preview" onclick="window.open(this.src)">
+                        </div>
                     </td>
                 </tr>
             </tbody>

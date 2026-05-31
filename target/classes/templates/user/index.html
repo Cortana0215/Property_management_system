@@ -5,6 +5,28 @@
     <title>住户端 - 物业服务</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/user.css}">
+    <style>
+        .request-card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+        }
+        .status-badge {
+            float: right;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .feedback-area {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed #eee;
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body>
     <div class="navbar">
@@ -17,16 +39,26 @@
     <div class="container">
         <h2>欢迎您, <span th:text="${session.loggedInUser.name}">住户</span></h2>
         <p>房号: <span th:text="${session.loggedInUser.apartmentNumber}">未知</span></p>
-        <p>请选择您需要的服务：</p>
         
-        <div class="action-menu">
-            <a th:href="@{/report}" class="action-card">
+        <div class="action-menu" style="margin-bottom: 30px;">
+            <a th:href="@{/report}" class="action-card" style="text-decoration: none; color: inherit;">
                 <h3>公共设施报修</h3>
-                <p>提交小区公共区域设备损坏、设施故障等问题</p>
+                <p>提交小区公共区域设备损坏问题</p>
             </a>
-            <div class="action-card" style="opacity: 0.6; cursor: not-allowed;">
-                <h3>我的账单 (开发中)</h3>
-                <p>查看并缴纳物业费、停车费等</p>
+        </div>
+
+        <h3>我的报修记录</h3>
+        <div th:if="${#lists.isEmpty(myRequests)}" style="color: #95a5a6; text-align: center; margin-top: 20px;">
+            暂无记录
+        </div>
+        <div th:each="req : ${myRequests}" class="request-card">
+            <span class="status-badge" th:text="${req.status}" th:style="${req.status == 'COMPLETED' ? 'background:#d4edda;color:#155724' : 'background:#fff3cd;color:#856404'}">状态</span>
+            <strong th:text="${req.facilityDescription}">描述</strong>
+            <div style="font-size: 12px; color: #95a5a6; margin-top: 5px;" th:text="${#temporals.format(req.submitTime, 'yyyy-MM-dd HH:mm')}"></div>
+            
+            <div th:if="${req.status == 'COMPLETED'}" class="feedback-area">
+                <p><strong>职工反馈:</strong> <span th:text="${req.staffFeedbackText}"></span></p>
+                <img th:if="${req.staffFeedbackImage}" th:src="${req.staffFeedbackImage}" style="max-width: 150px; border-radius: 4px; margin-top: 5px;">
             </div>
         </div>
     </div>

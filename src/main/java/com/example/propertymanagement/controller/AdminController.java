@@ -1,13 +1,19 @@
 package com.example.propertymanagement.controller;
 
+import com.example.propertymanagement.entity.Admin;
 import com.example.propertymanagement.entity.Resident;
+import com.example.propertymanagement.entity.Staff;
 import com.example.propertymanagement.entity.RepairRequest;
+import com.example.propertymanagement.repository.AdminRepository;
 import com.example.propertymanagement.repository.ResidentRepository;
+import com.example.propertymanagement.repository.StaffRepository;
 import com.example.propertymanagement.repository.RepairRequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 @Controller
 @RequestMapping("/admin")
@@ -20,10 +26,10 @@ public class AdminController {
     private RepairRequestRepository repairRequestRepository;
 
     @Autowired
-    private com.example.propertymanagement.repository.AdminRepository adminRepository;
+    private AdminRepository adminRepository;
 
     @Autowired
-    private com.example.propertymanagement.repository.StaffRepository staffRepository;
+    private StaffRepository staffRepository;
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
@@ -61,7 +67,7 @@ public class AdminController {
     }
 
     @PostMapping("/staff/add")
-    public String addStaff(@ModelAttribute com.example.propertymanagement.entity.Staff staff) {
+    public String addStaff(@ModelAttribute Staff staff) {
         staffRepository.save(staff);
         return "redirect:/admin/staff";
     }
@@ -80,7 +86,7 @@ public class AdminController {
     }
 
     @PostMapping("/admins/add")
-    public String addAdmin(@ModelAttribute com.example.propertymanagement.entity.Admin admin) {
+    public String addAdmin(@ModelAttribute Admin admin) {
         adminRepository.save(admin);
         return "redirect:/admin/admins";
     }
@@ -97,12 +103,12 @@ public class AdminController {
     @PostMapping("/repairs/assign/{id}")
     public String assignRepair(@PathVariable Long id, @RequestParam Long staffId) {
         RepairRequest request = repairRequestRepository.findById(id).orElse(null);
-        com.example.propertymanagement.entity.Staff staff = staffRepository.findById(staffId).orElse(null);
+        Staff staff = staffRepository.findById(staffId).orElse(null);
         if (request != null && staff != null) {
             request.setAssignedStaffId(staffId);
             request.setStaffName(staff.getName());
             request.setStatus("ASSIGNED");
-            request.setAssignTime(java.time.LocalDateTime.now());
+            request.setAssignTime(LocalDateTime.now());
             repairRequestRepository.save(request);
         }
         return "redirect:/admin/repairs";

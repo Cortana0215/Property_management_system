@@ -1,13 +1,24 @@
 package com.example.propertymanagement.controller;
 
 import com.example.propertymanagement.entity.RepairRequest;
+import com.example.propertymanagement.entity.Resident;
 import com.example.propertymanagement.repository.RepairRequestRepository;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Controller
 public class UserController {
@@ -18,12 +29,12 @@ public class UserController {
     private final String UPLOAD_DIR = "uploads/";
 
     @GetMapping("/")
-    public String index(jakarta.servlet.http.HttpSession session, Model model) {
-        com.example.propertymanagement.entity.Resident resident = (com.example.propertymanagement.entity.Resident) session.getAttribute("loggedInUser");
+    public String index(HttpSession session, Model model) {
+        Resident resident = (Resident) session.getAttribute("loggedInUser");
         if (resident != null) {
             model.addAttribute("myRequests", repairRequestRepository.findAll().stream()
                     .filter(r -> resident.getName().equals(r.getSubmitterName()))
-                    .collect(java.util.stream.Collectors.toList()));
+                    .collect(Collectors.toList()));
         }
         return "user/index";
     }
@@ -36,16 +47,16 @@ public class UserController {
 
     @PostMapping("/report")
     public String submitReport(@ModelAttribute RepairRequest repairRequest, 
-                               @RequestParam("image") org.springframework.web.multipart.MultipartFile image,
+                               @RequestParam("image") MultipartFile image,
                                Model model) {
         if (!image.isEmpty()) {
             try {
-                String fileName = java.util.UUID.randomUUID().toString() + "_" + image.getOriginalFilename();
-                java.nio.file.Path path = java.nio.file.Paths.get(UPLOAD_DIR + fileName);
-                java.nio.file.Files.createDirectories(path.getParent());
-                java.nio.file.Files.write(path, image.getBytes());
+                String fileName = UUID.randomUUID().toString() + "_" + image.getOriginalFilename();
+                Path path = Paths.get(UPLOAD_DIR + fileName);
+                Files.createDirectories(path.getParent());
+                Files.write(path, image.getBytes());
                 repairRequest.setImagePath("/uploads/" + fileName);
-            } catch (java.io.IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
