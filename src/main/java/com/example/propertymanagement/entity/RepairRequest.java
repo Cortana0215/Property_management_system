@@ -16,8 +16,19 @@ public class RepairRequest {
     private String submitterName;
     private String contactPhone;
     private String facilityDescription;
-    private String status; // e.g., "PENDING", "IN_PROGRESS", "RESOLVED"
+    private String imagePath; // Resident submitted image
+    
+    private Long assignedStaffId;
+    private String staffName;
+    
+    private String status; // "PENDING", "ASSIGNED", "COMPLETED"
     private LocalDateTime submitTime;
+    private LocalDateTime assignTime;
+    private LocalDateTime completeTime;
+
+    private String staffFeedbackText;
+    private String staffFeedbackImage;
+    private String residentFeedback;
 
     public RepairRequest() {
         this.submitTime = LocalDateTime.now();
@@ -44,9 +55,33 @@ public class RepairRequest {
     public String getFacilityDescription() { return facilityDescription; }
     public void setFacilityDescription(String facilityDescription) { this.facilityDescription = facilityDescription; }
 
+    public String getImagePath() { return imagePath; }
+    public void setImagePath(String imagePath) { this.imagePath = imagePath; }
+
+    public Long getAssignedStaffId() { return assignedStaffId; }
+    public void setAssignedStaffId(Long assignedStaffId) { this.assignedStaffId = assignedStaffId; }
+
+    public String getStaffName() { return staffName; }
+    public void setStaffName(String staffName) { this.staffName = staffName; }
+
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
     public LocalDateTime getSubmitTime() { return submitTime; }
     public void setSubmitTime(LocalDateTime submitTime) { this.submitTime = submitTime; }
+
+    public LocalDateTime getAssignTime() { return assignTime; }
+    public void setAssignTime(LocalDateTime assignTime) { this.assignTime = assignTime; }
+
+    public LocalDateTime getCompleteTime() { return completeTime; }
+    public void setCompleteTime(LocalDateTime completeTime) { this.completeTime = completeTime; }
+
+    public String getStaffFeedbackText() { return staffFeedbackText; }
+    public void setStaffFeedbackText(String staffFeedbackText) { this.staffFeedbackText = staffFeedbackText; }
+
+    public String getStaffFeedbackImage() { return staffFeedbackImage; }
+    public void setStaffFeedbackImage(String staffFeedbackImage) { this.staffFeedbackImage = staffFeedbackImage; }
+
+    public String getResidentFeedback() { return residentFeedback; }
+    public void setResidentFeedback(String residentFeedback) { this.residentFeedback = residentFeedback; }
 }

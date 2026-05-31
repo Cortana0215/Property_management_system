@@ -16,16 +16,30 @@ public class WebConfig implements WebMvcConfigurer {
     @Autowired
     private UserInterceptor userInterceptor;
 
+    @Autowired
+    private com.example.propertymanagement.interceptor.StaffInterceptor staffInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        // Admin routes to intercept
+        // Admin routes
         registry.addInterceptor(adminInterceptor)
                 .addPathPatterns("/admin/**")
-                .excludePathPatterns("/admin/login", "/admin/logout", "/css/**");
+                .excludePathPatterns("/login", "/logout", "/css/**", "/images/**", "/uploads/**");
 
-        // User routes to intercept
+        // Staff routes
+        registry.addInterceptor(staffInterceptor)
+                .addPathPatterns("/staff/**")
+                .excludePathPatterns("/login", "/logout", "/css/**", "/images/**", "/uploads/**");
+
+        // User (Resident) routes
         registry.addInterceptor(userInterceptor)
                 .addPathPatterns("/", "/report", "/report-success")
-                .excludePathPatterns("/login", "/logout", "/css/**");
+                .excludePathPatterns("/login", "/logout", "/css/**", "/images/**", "/uploads/**");
+    }
+
+    @Override
+    public void addResourceHandlers(org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations("file:uploads/");
     }
 }

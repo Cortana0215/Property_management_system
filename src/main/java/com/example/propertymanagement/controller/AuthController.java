@@ -21,49 +21,48 @@ public class AuthController {
     @Autowired
     private ResidentRepository residentRepository;
 
-    // --- User (Resident) Login ---
+    @Autowired
+    private com.example.propertymanagement.repository.StaffRepository staffRepository;
+
     @GetMapping("/login")
-    public String userLoginForm() {
-        return "user/login";
+    public String loginForm() {
+        return "login";
     }
 
     @PostMapping("/login")
-    public String userLoginSubmit(@RequestParam String username, @RequestParam String password, HttpSession session, Model model) {
-        Resident resident = residentRepository.findByUsername(username);
-        if (resident != null && resident.getPassword().equals(password)) {
-            session.setAttribute("loggedInUser", resident);
-            return "redirect:/";
+    public String loginSubmit(@RequestParam String username, 
+                              @RequestParam String password, 
+                              @RequestParam String role,
+                              HttpSession session, Model model) {
+        if ("ADMIN".equals(role)) {
+            Admin admin = adminRepository.findByUsername(username);
+            if (admin != null && admin.getPassword().equals(password)) {
+                session.setAttribute("loggedInAdmin", admin);
+                session.setAttribute("role", "ADMIN");
+                return "redirect:/admin/dashboard";
+            }
+        } else if ("RESIDENT".equals(role)) {
+            Resident resident = residentRepository.findByUsername(username);
+            if (resident != null && resident.getPassword().equals(password)) {
+                session.setAttribute("loggedInUser", resident);
+                session.setAttribute("role", "RESIDENT");
+                return "redirect:/";
+            }
+        } else if ("STAFF".equals(role)) {
+            com.example.propertymanagement.entity.Staff staff = staffRepository.findByUsername(username);
+            if (staff != null && staff.getPassword().equals(password)) {
+                session.setAttribute("loggedInStaff", staff);
+                session.setAttribute("role", "STAFF");
+                return "redirect:/staff/dashboard";
+            }
         }
-        model.addAttribute("error", "用户名或密码错误");
-        return "user/login";
+        model.addAttribute("error", "用户名、密码或角色错误");
+        return "login";
     }
 
     @GetMapping("/logout")
-    public String userLogout(HttpSession session) {
-        session.removeAttribute("loggedInUser");
+    public String logout(HttpSession session) {
+        session.invalidate();
         return "redirect:/login";
-    }
-
-    // --- Admin Login ---
-    @GetMapping("/admin/login")
-    public String adminLoginForm() {
-        return "admin/login";
-    }
-
-    @PostMapping("/admin/login")
-    public String adminLoginSubmit(@RequestParam String username, @RequestParam String password, HttpSession session, Model model) {
-        Admin admin = adminRepository.findByUsername(username);
-        if (admin != null && admin.getPassword().equals(password)) {
-            session.setAttribute("loggedInAdmin", admin);
-            return "redirect:/admin/dashboard";
-        }
-        model.addAttribute("error", "管理员用户名或密码错误");
-        return "admin/login";
-    }
-
-    @GetMapping("/admin/logout")
-    public String adminLogout(HttpSession session) {
-        session.removeAttribute("loggedInAdmin");
-        return "redirect:/admin/login";
     }
 }

@@ -17,6 +17,9 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private ResidentRepository residentRepository;
 
+    @Autowired
+    private com.example.propertymanagement.repository.StaffRepository staffRepository;
+
     @Override
     public void run(String... args) throws Exception {
         // Initialize default admin if none exists
@@ -29,6 +32,12 @@ public class DataInitializer implements CommandLineRunner {
         if (residentRepository.count() == 0) {
             residentRepository.save(new Resident("测试业主", "13800138000", "1栋1单元101", "user", "123456"));
             System.out.println("Default resident user created: user / 123456");
+        }
+
+        // Initialize a default staff for testing if none exists
+        if (staffRepository.count() == 0) {
+            staffRepository.save(new com.example.propertymanagement.entity.Staff("测试职工", "13900139000", "staff", "123456"));
+            System.out.println("Default staff user created: staff / 123456");
         }
     }
 }
