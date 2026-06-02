@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>便民服务 - 智慧物业</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/user.css}">
+    <style>
+        .service-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+        }
+        .contact-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .contact-item:last-child { border-bottom: none; }
+        .contact-name { font-weight: 700; color: #1a365d; }
+        .contact-number { color: var(--user-primary); font-family: monospace; font-size: 1.1rem; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>便民服务与常用电话</h1>
+        <a th:href="@{/}" style="color: white; text-decoration: none; font-weight: 600;">返回首页</a>
+    </div>
+    
+    <div class="container">
+        <div class="service-card">
+            <h3 style="margin-top: 0; color: #1a365d; border-bottom: 2px solid #3498db; padding-bottom: 10px; display: inline-block;">物业服务电话</h3>
+            <div class="contact-item">
+                <span class="contact-name">物业服务中心 (24小时)</span>
+                <span class="contact-number">010-8888-9999</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-name">报修中心</span>
+                <span class="contact-number">010-8888-1111</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-name">安保/监控中心</span>
+                <span class="contact-number">010-8888-2222</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-name">投诉处理部</span>
+                <span class="contact-number">010-8888-3333</span>
+            </div>
+        </div>
+
+        <div class="service-card">
+            <h3 style="margin-top: 0; color: #e74c3c; border-bottom: 2px solid #e74c3c; padding-bottom: 10px; display: inline-block;">紧急求助电话</h3>
+            <div class="contact-item">
+                <span class="contact-name">火警报警</span>
+                <span class="contact-number">119</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-name">医疗救护</span>
+                <span class="contact-number">120</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-name">治安报警</span>
+                <span class="contact-number">110</span>
+            </div>
+        </div>
+
+        <div class="service-card">
+            <h3 style="margin-top: 0; color: #48bb78; border-bottom: 2px solid #48bb78; padding-bottom: 10px; display: inline-block;">周边生活服务</h3>
+            <div class="contact-item">
+                <span class="contact-name">附近社区医院</span>
+                <span class="contact-number">010-1234-5678</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-name">顺丰快递 (本区域)</span>
+                <span class="contact-number">95338</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-name">小区便利店 (送货上门)</span>
+                <span class="contact-number">138-0000-0001</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

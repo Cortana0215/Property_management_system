@@ -29,6 +29,7 @@ public class RepairRequest {
     private String staffFeedbackText;
     private String staffFeedbackImage;
     private String residentFeedback;
+    private Integer rating; // 1-5 星
 
     public RepairRequest() {
         this.submitTime = LocalDateTime.now();
@@ -84,4 +85,7 @@ public class RepairRequest {
 
     public String getResidentFeedback() { return residentFeedback; }
     public void setResidentFeedback(String residentFeedback) { this.residentFeedback = residentFeedback; }
+
+    public Integer getRating() { return rating; }
+    public void setRating(Integer rating) { this.rating = rating; }
 }

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>社区公告 - 智慧物业</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/user.css}">
+    <style>
+        .notice-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            border-top: 5px solid var(--user-primary);
+        }
+        .notice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 15px;
+        }
+        .notice-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #1a365d;
+            margin: 0;
+        }
+        .notice-meta {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+        .notice-body {
+            color: #475569;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>社区公告</h1>
+        <a th:href="@{/}" style="color: white; text-decoration: none; font-weight: 600;">返回首页</a>
+    </div>
+    
+    <div class="container">
+        <div th:if="${#lists.isEmpty(notices)}" style="text-align: center; padding: 50px; color: #94a3b8;">
+            目前没有新的公告通知
+        </div>
+        
+        <div th:each="n : ${notices}" class="notice-card">
+            <div class="notice-header">
+                <div>
+                    <h2 class="notice-title" th:text="${n.title}"></h2>
+                    <div class="notice-meta">
+                        发布时间：<span th:text="${#temporals.format(n.createTime, 'yyyy-MM-dd HH:mm')}"></span>
+                        | 发布人：<span th:text="${n.publisherName}"></span>
+                    </div>
+                </div>
+                <span class="room-badge" style="background: #f1f5f9; color: #475569;">公告</span>
+            </div>
+            <div class="notice-body" th:text="${n.content}"></div>
+        </div>
+    </div>
+</body>
+</html>

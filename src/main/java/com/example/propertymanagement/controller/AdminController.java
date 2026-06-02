@@ -31,6 +31,12 @@ public class AdminController {
     @Autowired
     private RoomRepository roomRepository;
 
+    @Autowired
+    private NoticeRepository noticeRepository;
+
+    @Autowired
+    private ComplaintRepository complaintRepository;
+
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
         model.addAttribute("residentCount", residentRepository.count());
@@ -188,5 +194,42 @@ public class AdminController {
             repairRequestRepository.save(request);
         }
         return "redirect:/admin/repairs";
+    }
+
+    // --- Notice Management ---
+    @GetMapping("/notices")
+    public String listNotices(Model model) {
+        model.addAttribute("notices", noticeRepository.findAll());
+        return "admin/notices";
+    }
+
+    @PostMapping("/notices/add")
+    public String addNotice(@ModelAttribute Notice notice) {
+        noticeRepository.save(notice);
+        return "redirect:/admin/notices";
+    }
+
+    @PostMapping("/notices/delete/{id}")
+    public String deleteNotice(@PathVariable Long id) {
+        noticeRepository.deleteById(id);
+        return "redirect:/admin/notices";
+    }
+
+    // --- Complaint Management ---
+    @GetMapping("/complaints")
+    public String listComplaints(Model model) {
+        model.addAttribute("complaints", complaintRepository.findAll());
+        return "admin/complaints";
+    }
+
+    @PostMapping("/complaints/handle/{id}")
+    public String handleComplaint(@PathVariable Long id, @RequestParam String feedback, @RequestParam String status) {
+        Complaint complaint = complaintRepository.findById(id).orElse(null);
+        if (complaint != null) {
+            complaint.setResultFeedback(feedback);
+            complaint.setStatus(status);
+            complaintRepository.save(complaint);
+        }
+        return "redirect:/admin/complaints";
     }
 }

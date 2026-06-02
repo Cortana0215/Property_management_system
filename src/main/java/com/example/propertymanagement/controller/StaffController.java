@@ -2,6 +2,7 @@ package com.example.propertymanagement.controller;
 
 import com.example.propertymanagement.entity.RepairRequest;
 import com.example.propertymanagement.entity.Staff;
+import com.example.propertymanagement.repository.NoticeRepository;
 import com.example.propertymanagement.repository.RepairRequestRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class StaffController {
     @Autowired
     private RepairRequestRepository repairRequestRepository;
 
+    @Autowired
+    private NoticeRepository noticeRepository;
+
     private final String UPLOAD_DIR = "uploads/";
 
     @GetMapping("/dashboard")
@@ -41,6 +45,12 @@ public class StaffController {
                 .collect(Collectors.toList()));
 
         return "staff/dashboard";
+    }
+
+    @GetMapping("/notices")
+    public String listNotices(Model model) {
+        model.addAttribute("notices", noticeRepository.findByTargetRoleInOrderByCreateTimeDesc(java.util.Arrays.asList("ALL", "STAFF")));
+        return "staff/notices";
     }
 
     @PostMapping("/tasks/complete/{id}")

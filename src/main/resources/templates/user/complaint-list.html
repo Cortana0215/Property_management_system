@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>投诉建议 - 智慧物业</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/user.css}">
+</head>
+<body>
+    <div class="navbar">
+        <h1>我的投诉与建议</h1>
+        <a th:href="@{/}" style="color: white; text-decoration: none; font-weight: 600;">返回首页</a>
+    </div>
+    
+    <div class="container">
+        <div style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
+            <p style="color: #64748b; margin: 0;">您的反馈是我们进步的动力。</p>
+            <a th:href="@{/complaint/new}" class="btn-primary">新建投诉/建议</a>
+        </div>
+
+        <div th:if="${#lists.isEmpty(complaints)}" style="text-align: center; padding: 50px; background: white; border-radius: 16px; color: #94a3b8;">
+            暂无历史投诉与建议记录
+        </div>
+        
+        <div th:each="c : ${complaints}" class="request-card" style="border-left-color: #f6ad55;">
+            <div th:class="'status-tag ' + ${c.status == 'RESOLVED' ? 'status-completed' : 'status-pending'}" 
+                 th:text="${c.status == 'PENDING' ? '待处理' : (c.status == 'PROCESSING' ? '处理中' : '已解决')}"></div>
+            
+            <div style="font-weight: 800; font-size: 1.15rem;" th:text="${c.title}">标题</div>
+            <p th:text="${c.content}" style="color: #475569; margin: 10px 0;"></p>
+            <div style="font-size: 0.85rem; color: #b2bec3;">提交时间：<span th:text="${#temporals.format(c.submitTime, 'yyyy-MM-dd HH:mm')}"></span></div>
+            
+            <div th:if="${c.status == 'RESOLVED'}" class="feedback-box" style="border-left: 4px solid var(--success);">
+                <div style="color: #155724; font-size: 0.9rem; margin-bottom: 8px;"><strong>物业回复：</strong></div>
+                <div th:text="${c.resultFeedback}">回复内容...</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

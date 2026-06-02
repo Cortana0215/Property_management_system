@@ -1,17 +1,17 @@
 package com.example.propertymanagement.controller;
 
+import com.example.propertymanagement.entity.Complaint;
 import com.example.propertymanagement.entity.RepairRequest;
 import com.example.propertymanagement.entity.Resident;
+import com.example.propertymanagement.repository.ComplaintRepository;
+import com.example.propertymanagement.repository.NoticeRepository;
 import com.example.propertymanagement.repository.RepairRequestRepository;
 import com.example.propertymanagement.repository.ResidentRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -32,6 +32,12 @@ public class UserController {
 
     @Autowired
     private RepairRequestRepository repairRequestRepository;
+
+    @Autowired
+    private NoticeRepository noticeRepository;
+
+    @Autowired
+    private ComplaintRepository complaintRepository;
 
     private final String UPLOAD_DIR = "uploads/";
 
@@ -102,5 +108,51 @@ public class UserController {
         repairRequestRepository.save(repairRequest);
         model.addAttribute("message", "报修提交成功！物业人员将尽快处理。");
         return "user/report-success";
+    }
+
+    @PostMapping("/repair/rate/{id}")
+    public String rateRepair(@PathVariable Long id, @RequestParam Integer rating, @RequestParam String feedback) {
+        RepairRequest request = repairRequestRepository.findById(id).orElse(null);
+        if (request != null && "COMPLETED".equals(request.getStatus())) {
+            request.setRating(rating);
+            request.setResidentFeedback(feedback);
+            repairRequestRepository.save(request);
+        }
+        return "redirect:/";
+    }
+
+    // --- Complaint ---
+    @GetMapping("/complaints")
+    public String complaintList(HttpSession session, Model model) {
+        Resident resident = (Resident) session.getAttribute("loggedInUser");
+        model.addAttribute("complaints", complaintRepository.findBySubmitterNameOrderBySubmitTimeDesc(resident.getName()));
+        return "user/complaint-list";
+    }
+
+    @GetMapping("/complaint/new")
+    public String complaintForm() {
+        return "user/complaint-form";
+    }
+
+    @PostMapping("/complaint/submit")
+    public String submitComplaint(@ModelAttribute Complaint complaint, HttpSession session) {
+        Resident resident = (Resident) session.getAttribute("loggedInUser");
+        complaint.setSubmitterName(resident.getName());
+        complaint.setContactPhone(resident.getPhone());
+        complaintRepository.save(complaint);
+        return "redirect:/complaints";
+    }
+
+    // --- Notices ---
+    @GetMapping("/notices")
+    public String listNotices(Model model) {
+        model.addAttribute("notices", noticeRepository.findByTargetRoleInOrderByCreateTimeDesc(java.util.Arrays.asList("ALL", "RESIDENT")));
+        return "user/notices";
+    }
+
+    // --- Services ---
+    @GetMapping("/services")
+    public String services() {
+        return "user/services";
     }
 }

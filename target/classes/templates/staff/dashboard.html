@@ -49,6 +49,7 @@
         <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
             <h1>物业职工端</h1>
             <div>
+                <a th:href="@{/staff/notices}" style="color: #ecf0f1; text-decoration: none; margin-right: 20px; font-weight: 600;">内部公告</a>
                 <span th:text="${session.loggedInStaff.name}">职工</span> | 
                 <a th:href="@{/logout}" style="color: #ecf0f1; text-decoration: none;">退出</a>
             </div>

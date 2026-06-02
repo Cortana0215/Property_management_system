@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>投诉管理 - 物业管理系统</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>物业管理系统</h2>
+        </div>
+        <div class="sidebar-menu">
+            <a th:href="@{/admin/dashboard}">仪表盘</a>
+            <a th:href="@{/admin/buildings}">楼栋管理</a>
+            <a th:href="@{/admin/rooms}">房屋管理</a>
+            <a th:href="@{/admin/residents}">住户管理</a>
+            <a th:href="@{/admin/staff}">职工管理</a>
+            <a th:href="@{/admin/notices}">公告管理</a>
+            <a th:href="@{/admin/complaints}" class="active">投诉管理</a>
+            <a th:href="@{/admin/repairs}">报修任务</a>
+            <a th:href="@{/logout}" style="margin-top: 40px; color: #f56565;">退出系统</a>
+        </div>
+    </div>
+
+    <div class="content">
+        <h1>投诉建议处理</h1>
+
+        <div class="card">
+            <div class="card-title">待处理投诉</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>投诉信息</th>
+                        <th>反馈人员</th>
+                        <th>提交时间</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="c : ${complaints}">
+                        <td>
+                            <strong th:text="${c.title}"></strong>
+                            <p th:text="${c.content}" style="font-size: 0.85rem; color: var(--text-muted);"></p>
+                        </td>
+                        <td>
+                            <div th:text="${c.submitterName}"></div>
+                            <div th:text="${c.contactPhone}" style="font-size: 0.8rem; color: var(--text-muted);"></div>
+                        </td>
+                        <td th:text="${#temporals.format(c.submitTime, 'yyyy-MM-dd HH:mm')}"></td>
+                        <td>
+                            <span th:text="${c.status == 'PENDING' ? '待处理' : (c.status == 'PROCESSING' ? '处理中' : '已解决')}" 
+                                  th:style="${c.status == 'RESOLVED' ? 'color: var(--success)' : 'color: #f6ad55'}"></span>
+                        </td>
+                        <td>
+                            <button th:if="${c.status != 'RESOLVED'}" class="btn btn-primary" style="padding: 5px 10px;" 
+                                    th:onclick="'document.getElementById(\'handle-form-' + ${c.id} + '\').style.display = \'block\''">回复处理</button>
+                            
+                            <div th:id="'handle-form-' + ${c.id}" style="display: none; margin-top: 10px; background: #f8fafc; padding: 15px; border-radius: 8px;">
+                                <form th:action="@{/admin/complaints/handle/{id}(id=${c.id})}" method="post">
+                                    <textarea name="feedback" placeholder="输入处理反馈内容..." required style="margin-bottom: 10px;"></textarea>
+                                    <select name="status" style="width: 150px; margin-bottom: 10px;">
+                                        <option value="PROCESSING">设为处理中</option>
+                                        <option value="RESOLVED">标记为已解决</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-success">提交反馈</button>
+                                </form>
+                            </div>
+
+                            <div th:if="${c.status == 'RESOLVED'}" style="font-size: 0.85rem; color: var(--text-muted);">
+                                <strong>已回复：</strong> <span th:text="${c.resultFeedback}"></span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

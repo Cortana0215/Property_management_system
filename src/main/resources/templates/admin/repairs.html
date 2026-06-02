@@ -35,6 +35,8 @@
             <a th:href="@{/admin/rooms}">房屋管理</a>
             <a th:href="@{/admin/residents}">住户管理</a>
             <a th:href="@{/admin/staff}">职工管理</a>
+            <a th:href="@{/admin/notices}">公告管理</a>
+            <a th:href="@{/admin/complaints}">投诉管理</a>
             <a th:href="@{/admin/admins}">管理员账号</a>
             <a th:href="@{/admin/repairs}" class="active">报修任务</a>
             <a th:href="@{/logout}" style="margin-top: 40px; color: #f56565;">退出系统</a>
@@ -71,6 +73,13 @@
                             <span th:class="'status-pill status-' + ${repair.status}" th:text="${repair.status == 'PENDING' ? '待指派' : (repair.status == 'ASSIGNED' ? '处理中' : '已完成')}">状态</span>
                         </td>
                         <td th:text="${repair.staffName != null ? repair.staffName : '未指派'}">人员</td>
+                        <td>
+                            <div th:if="${repair.rating != null}">
+                                <span style="color: #f6ad55;" th:text="${'⭐'.repeat(repair.rating)}"></span>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);" th:text="${repair.residentFeedback}"></div>
+                            </div>
+                            <span th:if="${repair.status == 'COMPLETED' && repair.rating == null}" style="color: #cbd5e0; font-size: 0.75rem;">暂无评价</span>
+                        </td>
                         <td style="font-size: 0.75rem; color: var(--text-muted);">
                             <div>提: <span th:text="${#temporals.format(repair.submitTime, 'MM-dd HH:mm')}"></span></div>
                             <div th:if="${repair.completeTime}">完: <span th:text="${#temporals.format(repair.completeTime, 'MM-dd HH:mm')}"></span></div>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>公告管理 - 物业管理系统</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>物业管理系统</h2>
+        </div>
+        <div class="sidebar-menu">
+            <a th:href="@{/admin/dashboard}">仪表盘</a>
+            <a th:href="@{/admin/buildings}">楼栋管理</a>
+            <a th:href="@{/admin/rooms}">房屋管理</a>
+            <a th:href="@{/admin/residents}">住户管理</a>
+            <a th:href="@{/admin/staff}">职工管理</a>
+            <a th:href="@{/admin/notices}" class="active">公告管理</a>
+            <a th:href="@{/admin/complaints}">投诉管理</a>
+            <a th:href="@{/admin/repairs}">报修任务</a>
+            <a th:href="@{/logout}" style="margin-top: 40px; color: #f56565;">退出系统</a>
+        </div>
+    </div>
+
+    <div class="content">
+        <h1>小区公告管理</h1>
+
+        <div class="card">
+            <div class="card-title">发布新公告</div>
+            <form th:action="@{/admin/notices/add}" method="post">
+                <div class="form-group">
+                    <label>公告标题</label>
+                    <input type="text" name="title" required placeholder="输入公告标题" style="max-width: 100%;">
+                </div>
+                <div class="form-group">
+                    <label>发布对象</label>
+                    <select name="targetRole" required style="width: 200px;">
+                        <option value="ALL">全体人员</option>
+                        <option value="RESIDENT">仅住户</option>
+                        <option value="STAFF">仅职工</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>公告内容</label>
+                    <textarea name="content" rows="6" required placeholder="请输入公告正文..." style="max-width: 100%;"></textarea>
+                </div>
+                <input type="hidden" name="publisherName" th:value="${session.loggedInAdmin.username}">
+                <button type="submit" class="btn btn-primary">立即发布</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <div class="card-title">历史公告</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>标题</th>
+                        <th>发布对象</th>
+                        <th>发布时间</th>
+                        <th>发布人</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="n : ${notices}">
+                        <td><strong th:text="${n.title}"></strong></td>
+                        <td>
+                            <span th:text="${n.targetRole == 'ALL' ? '全体' : (n.targetRole == 'RESIDENT' ? '住户' : '职工')}"></span>
+                        </td>
+                        <td th:text="${#temporals.format(n.createTime, 'yyyy-MM-dd HH:mm')}"></td>
+                        <td th:text="${n.publisherName}"></td>
+                        <td>
+                            <form th:action="@{/admin/notices/delete/{id}(id=${n.id})}" method="post">
+                                <button type="submit" class="btn btn-danger">删除</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

@@ -41,16 +41,21 @@
                 <h3>物业缴费</h3>
                 <p>在线查缴物业/水电费</p>
             </div>
-            <div class="action-tile" style="opacity: 0.6;">
+            <a th:href="@{/notices}" class="action-tile">
                 <div style="font-size: 2.5rem; margin-bottom: 10px;">📢</div>
                 <h3>社区公告</h3>
                 <p>了解小区最新动态</p>
-            </div>
-            <div class="action-tile" style="opacity: 0.6;">
+            </a>
+            <a th:href="@{/complaints}" class="action-tile">
                 <div style="font-size: 2.5rem; margin-bottom: 10px;">💬</div>
                 <h3>投诉建议</h3>
                 <p>您的声音让我们更进步</p>
-            </div>
+            </a>
+            <a th:href="@{/services}" class="action-tile">
+                <div style="font-size: 2.5rem; margin-bottom: 10px;">📞</div>
+                <h3>便民服务</h3>
+                <p>常用电话与周边生活</p>
+            </a>
         </div>
 
         <!-- 报修记录 -->
@@ -71,6 +76,25 @@
                     <div th:text="${req.staffFeedbackText}">处理结果...</div>
                     <img th:if="${req.staffFeedbackImage}" th:src="${req.staffFeedbackImage}" 
                          style="max-width: 200px; border-radius: 8px; margin-top: 15px; border: 4px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                    
+                    <div th:if="${req.rating == null}" style="margin-top: 20px; border-top: 1px dashed #d1d8e0; padding-top: 15px;">
+                        <form th:action="@{/repair/rate/{id}(id=${req.id})}" method="post">
+                            <label style="font-size: 0.85rem; font-weight: 700;">服务评价：</label>
+                            <select name="rating" required style="width: auto; padding: 5px; font-size: 0.8rem; margin-bottom: 10px;">
+                                <option value="5">⭐⭐⭐⭐⭐ (非常满意)</option>
+                                <option value="4">⭐⭐⭐⭐ (满意)</option>
+                                <option value="3">⭐⭐⭐ (一般)</option>
+                                <option value="2">⭐⭐ (不满意)</option>
+                                <option value="1">⭐ (非常不满意)</option>
+                            </select>
+                            <textarea name="feedback" placeholder="写下您的评价内容..." rows="2" style="font-size: 0.85rem; margin-bottom: 10px;"></textarea>
+                            <button type="submit" class="btn-primary" style="padding: 5px 15px; font-size: 0.8rem;">提交评价</button>
+                        </form>
+                    </div>
+                    <div th:if="${req.rating != null}" style="margin-top: 15px; font-size: 0.9rem; color: #48bb78;">
+                        <strong>我的评分：</strong> <span th:text="${'⭐'.repeat(req.rating)}"></span>
+                        <div style="font-style: italic; color: #718096; margin-top: 5px;" th:text="'“' + ${req.residentFeedback} + '”'"></div>
+                    </div>
                 </div>
             </div>
         </div>
