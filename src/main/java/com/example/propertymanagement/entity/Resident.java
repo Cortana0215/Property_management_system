@@ -1,9 +1,8 @@
 package com.example.propertymanagement.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Resident {
@@ -14,10 +13,18 @@ public class Resident {
     
     private String name;
     private String phone;
-    private String apartmentNumber;
+    private String apartmentNumber; // Keep for legacy/simple reference, but prefer rooms
     
     private String username;
     private String password;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "resident_room",
+        joinColumns = @JoinColumn(name = "resident_id"),
+        inverseJoinColumns = @JoinColumn(name = "room_id")
+    )
+    private List<Room> rooms = new ArrayList<>();
 
     public Resident() {}
 
@@ -46,4 +53,12 @@ public class Resident {
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+
+    public List<Room> getRooms() { return rooms; }
+    public void setRooms(List<Room> rooms) { this.rooms = rooms; }
+
+    public void addRoom(Room room) {
+        this.rooms.add(room);
+        room.getResidents().add(this);
+    }
 }

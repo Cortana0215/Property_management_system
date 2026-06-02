@@ -2,64 +2,48 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>物业管理后台 - 仪表盘</title>
+    <title>管理后台 - 仪表盘</title>
     <link rel="stylesheet" th:href="@{/css/admin.css}">
-    <style>
-        .stats-container {
-            display: flex;
-            gap: 20px;
-            margin-top: 20px;
-        }
-        .stat-card {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            flex: 1;
-            text-align: center;
-        }
-        .stat-card h3 {
-            margin: 0;
-            color: #7f8c8d;
-            font-size: 16px;
-        }
-        .stat-card .number {
-            font-size: 32px;
-            font-weight: bold;
-            color: #2c3e50;
-            margin: 10px 0 0 0;
-        }
-    </style>
 </head>
 <body>
     <div class="sidebar">
-        <h2>物业管理系统</h2>
-        <a th:href="@{/admin/dashboard}">仪表盘</a>
-        <a th:href="@{/admin/residents}">住户信息管理</a>
-        <a th:href="@{/admin/staff}">职工信息管理</a>
-        <a th:href="@{/admin/admins}">管理员账号管理</a>
-        <a th:href="@{/admin/repairs}">报修任务管理</a>
-        <a th:href="@{/logout}" style="margin-top: 50px; background-color: #c0392b;">退出登录</a>
+        <div class="sidebar-header">
+            <h2>物业管理系统</h2>
+        </div>
+        <div class="sidebar-menu">
+            <a th:href="@{/admin/dashboard}" class="active">仪表盘</a>
+            <a th:href="@{/admin/buildings}">楼栋管理</a>
+            <a th:href="@{/admin/rooms}">房屋管理</a>
+            <a th:href="@{/admin/residents}">住户管理</a>
+            <a th:href="@{/admin/staff}">职工管理</a>
+            <a th:href="@{/admin/admins}">管理员账号</a>
+            <a th:href="@{/admin/repairs}">报修任务</a>
+            <a th:href="@{/logout}" style="margin-top: 40px; color: #f56565;">退出系统</a>
+        </div>
     </div>
 
     <div class="content">
-        <h1>仪表盘</h1>
-        <div class="stats-container">
-            <div class="stat-card">
-                <h3>总住户数</h3>
-                <p class="number" th:text="${residentCount}">0</p>
+        <h1>仪表盘概览</h1>
+        
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-label">总住户数</div>
+                <div class="stat-value" th:text="${residentCount}">0</div>
             </div>
-            <div class="stat-card">
-                <h3>总职工数</h3>
-                <p class="number" th:text="${staffCount}">0</p>
+            <div class="stat-item" style="border-left-color: #48bb78;">
+                <div class="stat-label">总职工数</div>
+                <div class="stat-value" th:text="${staffCount}">0</div>
             </div>
-            <div class="stat-card">
-                <h3>待处理报修</h3>
-                <p class="number" th:text="${pendingRepairs}">0</p>
+            <div class="stat-item" style="border-left-color: #f6ad55;">
+                <div class="stat-label">待处理报修</div>
+                <div class="stat-value" th:text="${pendingRepairs}">0</div>
             </div>
         </div>
-        <div class="form-container" style="margin-top: 30px;">
-            <p>欢迎回来，<span th:text="${session.loggedInAdmin.username}">管理员</span>！这里是系统的管理后台。</p>
+
+        <div class="card">
+            <div class="card-title">系统状态</div>
+            <p>欢迎回来，管理员 <strong><span th:text="${session.loggedInAdmin.username}">admin</span></strong>。</p>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">当前系统运行正常，所有模块已就绪。您可以通过左侧菜单管理小区资产、住户及报修任务。</p>
         </div>
     </div>
 </body>

@@ -3,6 +3,7 @@ package com.example.propertymanagement.controller;
 import com.example.propertymanagement.entity.RepairRequest;
 import com.example.propertymanagement.entity.Resident;
 import com.example.propertymanagement.repository.RepairRequestRepository;
+import com.example.propertymanagement.repository.ResidentRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,19 +25,57 @@ import java.util.stream.Collectors;
 public class UserController {
 
     @Autowired
+    private ResidentRepository residentRepository;
+
+    @Autowired
+    private com.example.propertymanagement.repository.RoomRepository roomRepository;
+
+    @Autowired
     private RepairRequestRepository repairRequestRepository;
 
     private final String UPLOAD_DIR = "uploads/";
 
     @GetMapping("/")
     public String index(HttpSession session, Model model) {
-        Resident resident = (Resident) session.getAttribute("loggedInUser");
-        if (resident != null) {
+        Resident sessionResident = (Resident) session.getAttribute("loggedInUser");
+        if (sessionResident != null) {
+            // Re-fetch to get latest data including rooms
+            Resident resident = residentRepository.findById(sessionResident.getId()).orElse(sessionResident);
             model.addAttribute("myRequests", repairRequestRepository.findAll().stream()
                     .filter(r -> resident.getName().equals(r.getSubmitterName()))
                     .collect(Collectors.toList()));
+            model.addAttribute("myRooms", resident.getRooms());
         }
         return "user/index";
+    }
+
+    @GetMapping("/profile")
+    public String profile(HttpSession session, Model model) {
+        Resident resident = (Resident) session.getAttribute("loggedInUser");
+        if (resident == null) return "redirect:/login";
+        
+        // Re-fetch to ensure we have the latest info
+        resident = residentRepository.findById(resident.getId()).orElse(resident);
+        model.addAttribute("resident", resident);
+        return "user/profile";
+    }
+
+    @PostMapping("/profile/update")
+    public String updateProfile(@ModelAttribute Resident updatedResident, HttpSession session) {
+        Resident current = (Resident) session.getAttribute("loggedInUser");
+        if (current != null) {
+            Resident resident = residentRepository.findById(current.getId()).orElse(null);
+            if (resident != null) {
+                resident.setName(updatedResident.getName());
+                resident.setPhone(updatedResident.getPhone());
+                if (updatedResident.getPassword() != null && !updatedResident.getPassword().isEmpty()) {
+                    resident.setPassword(updatedResident.getPassword());
+                }
+                residentRepository.save(resident);
+                session.setAttribute("loggedInUser", resident);
+            }
+        }
+        return "redirect:/profile";
     }
 
     @GetMapping("/report")
@@ -47,9 +86,9 @@ public class UserController {
 
     @PostMapping("/report")
     public String submitReport(@ModelAttribute RepairRequest repairRequest, 
-                               @RequestParam("image") MultipartFile image,
+                               @RequestParam(value = "image", required = false) MultipartFile image,
                                Model model) {
-        if (!image.isEmpty()) {
+        if (image != null && !image.isEmpty()) {
             try {
                 String fileName = UUID.randomUUID().toString() + "_" + image.getOriginalFilename();
                 Path path = Paths.get(UPLOAD_DIR + fileName);

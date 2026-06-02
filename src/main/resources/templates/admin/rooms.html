@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>房屋管理 - 物业管理系统</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>物业管理系统</h2>
+        </div>
+        <div class="sidebar-menu">
+            <a th:href="@{/admin/dashboard}">仪表盘</a>
+            <a th:href="@{/admin/buildings}">楼栋管理</a>
+            <a th:href="@{/admin/rooms}" class="active">房屋管理</a>
+            <a th:href="@{/admin/residents}">住户管理</a>
+            <a th:href="@{/admin/staff}">职工管理</a>
+            <a th:href="@{/admin/admins}">管理员账号</a>
+            <a th:href="@{/admin/repairs}">报修任务</a>
+            <a th:href="@{/logout}" style="margin-top: 40px; color: #f56565;">退出系统</a>
+        </div>
+    </div>
+
+    <div class="content">
+        <h1>房屋信息管理 <span th:if="${selectedBuilding}" style="color: var(--text-muted); font-size: 1.2rem;" th:text="' / ' + ${selectedBuilding.name}"></span></h1>
+
+        <div class="card">
+            <div class="card-title">新增房屋</div>
+            <form th:action="@{/admin/rooms/add}" method="post" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; align-items: flex-end;">
+                <div>
+                    <label>所属楼栋</label>
+                    <select name="buildingId" required>
+                        <option value="">请选择...</option>
+                        <option th:each="b : ${buildings}" th:value="${b.id}" th:text="${b.name}" th:selected="${selectedBuilding != null && b.id == selectedBuilding.id}"></option>
+                    </select>
+                </div>
+                <div>
+                    <label>单元</label>
+                    <input type="text" name="unitNumber" placeholder="如：1单元" required>
+                </div>
+                <div>
+                    <label>房号</label>
+                    <input type="text" name="roomNumber" placeholder="如：101" required>
+                </div>
+                <div>
+                    <label>建筑面积 (㎡)</label>
+                    <input type="number" step="0.01" name="area" placeholder="0.00" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="height: 48px;">保存房屋</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                数据列表
+                <select onchange="location.href='/admin/rooms?buildingId=' + this.value" style="width: auto; padding: 5px 15px; font-size: 0.85rem;">
+                    <option value="">所有楼栋</option>
+                    <option th:each="b : ${buildings}" th:value="${b.id}" th:text="${b.name}" th:selected="${selectedBuilding != null && b.id == selectedBuilding.id}"></option>
+                </select>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>楼栋</th>
+                        <th>单元-房号</th>
+                        <th>面积</th>
+                        <th>状态</th>
+                        <th>当前住户</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="r : ${rooms}">
+                        <td th:text="${r.id}"></td>
+                        <td th:text="${r.building.name}"></td>
+                        <td><strong th:text="${r.unitNumber} + ' - ' + ${r.roomNumber}"></strong></td>
+                        <td th:text="${r.area} + ' ㎡'"></td>
+                        <td>
+                            <span th:if="${r.status == 'VACANT'}" style="color: var(--success); font-weight: 700;">● 空置</span>
+                            <span th:if="${r.status == 'OCCUPIED'}" style="color: var(--secondary-color); font-weight: 700;">● 已入住</span>
+                        </td>
+                        <td>
+                            <span th:each="res : ${r.residents}" class="btn" style="background: #f1f5f9; color: #475569; font-size: 0.75rem; margin-right: 5px; padding: 2px 8px;" th:text="${res.name}"></span>
+                        </td>
+                        <td>
+                            <form th:action="@{/admin/rooms/delete/{id}(id=${r.id})}" method="post">
+                                <button type="submit" class="btn btn-danger" style="padding: 4px 10px; font-size: 0.75rem;">删除</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

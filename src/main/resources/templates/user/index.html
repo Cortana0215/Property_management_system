@@ -2,63 +2,76 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>住户端 - 物业服务</title>
+    <title>住户服务门户 - 智慧物业</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/user.css}">
-    <style>
-        .request-card {
-            background: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            margin-bottom: 15px;
-            border-left: 4px solid #3498db;
-        }
-        .status-badge {
-            float: right;
-            font-size: 12px;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-        .feedback-area {
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px dashed #eee;
-            font-size: 14px;
-        }
-    </style>
 </head>
 <body>
     <div class="navbar">
         <h1>智慧小区服务平台</h1>
-        <div style="text-align: right; padding-right: 20px;">
-            <a th:href="@{/logout}" style="color: #e74c3c; text-decoration: none; font-size: 14px;">退出登录</a>
+        <div style="display: flex; align-items: center;">
+            <a th:href="@{/profile}" style="color: white; text-decoration: none; font-weight: 600; margin-right: 25px;">个人中心</a>
+            <a th:href="@{/logout}" class="btn-primary" style="background: rgba(255,255,255,0.2); padding: 8px 18px;">退出</a>
         </div>
     </div>
     
     <div class="container">
-        <h2>欢迎您, <span th:text="${session.loggedInUser.name}">住户</span></h2>
-        <p>房号: <span th:text="${session.loggedInUser.apartmentNumber}">未知</span></p>
+        <!-- 欢迎卡片 -->
+        <div class="welcome-card">
+            <div class="welcome-text">
+                <h2>下午好，<span th:text="${session.loggedInUser.name}">住户</span></h2>
+                <div class="property-info">
+                    <span style="font-weight: 600;">我的房产：</span>
+                    <span th:each="room : ${myRooms}" class="room-badge" th:text="${room.building.name} + ' ' + ${room.roomNumber}"></span>
+                    <span th:if="${#lists.isEmpty(myRooms)}" style="color: #e74c3c;">暂未绑定房产，请联系物业。</span>
+                </div>
+            </div>
+            <a th:href="@{/profile}" class="btn-primary">管理个人资料</a>
+        </div>
         
-        <div class="action-menu" style="margin-bottom: 30px;">
-            <a th:href="@{/report}" class="action-card" style="text-decoration: none; color: inherit;">
-                <h3>公共设施报修</h3>
-                <p>提交小区公共区域设备损坏问题</p>
+        <!-- 功能网格 -->
+        <div class="action-grid">
+            <a th:href="@{/report}" class="action-tile">
+                <div style="font-size: 2.5rem; margin-bottom: 10px;">🛠️</div>
+                <h3>设施报修</h3>
+                <p>公共设备故障快速上报</p>
             </a>
+            <div class="action-tile" style="opacity: 0.6;">
+                <div style="font-size: 2.5rem; margin-bottom: 10px;">💰</div>
+                <h3>物业缴费</h3>
+                <p>在线查缴物业/水电费</p>
+            </div>
+            <div class="action-tile" style="opacity: 0.6;">
+                <div style="font-size: 2.5rem; margin-bottom: 10px;">📢</div>
+                <h3>社区公告</h3>
+                <p>了解小区最新动态</p>
+            </div>
+            <div class="action-tile" style="opacity: 0.6;">
+                <div style="font-size: 2.5rem; margin-bottom: 10px;">💬</div>
+                <h3>投诉建议</h3>
+                <p>您的声音让我们更进步</p>
+            </div>
         </div>
 
-        <h3>我的报修记录</h3>
-        <div th:if="${#lists.isEmpty(myRequests)}" style="color: #95a5a6; text-align: center; margin-top: 20px;">
-            暂无记录
-        </div>
-        <div th:each="req : ${myRequests}" class="request-card">
-            <span class="status-badge" th:text="${req.status}" th:style="${req.status == 'COMPLETED' ? 'background:#d4edda;color:#155724' : 'background:#fff3cd;color:#856404'}">状态</span>
-            <strong th:text="${req.facilityDescription}">描述</strong>
-            <div style="font-size: 12px; color: #95a5a6; margin-top: 5px;" th:text="${#temporals.format(req.submitTime, 'yyyy-MM-dd HH:mm')}"></div>
-            
-            <div th:if="${req.status == 'COMPLETED'}" class="feedback-area">
-                <p><strong>职工反馈:</strong> <span th:text="${req.staffFeedbackText}"></span></p>
-                <img th:if="${req.staffFeedbackImage}" th:src="${req.staffFeedbackImage}" style="max-width: 150px; border-radius: 4px; margin-top: 5px;">
+        <!-- 报修记录 -->
+        <div class="request-list">
+            <h3>近期报修进度</h3>
+            <div th:if="${#lists.isEmpty(myRequests)}" style="background: white; padding: 40px; text-align: center; border-radius: 16px; color: #b2bec3;">
+                目前没有报修记录
+            </div>
+            <div th:each="req : ${myRequests}" class="request-card">
+                <div th:class="'status-tag ' + ${req.status == 'COMPLETED' ? 'status-completed' : (req.status == 'ASSIGNED' ? 'status-assigned' : 'status-pending')}" 
+                     th:text="${req.status == 'COMPLETED' ? '已完结' : (req.status == 'ASSIGNED' ? '处理中' : '待指派')}">状态</div>
+                
+                <div style="font-weight: 800; font-size: 1.15rem;" th:text="${req.facilityDescription}">描述</div>
+                <div style="font-size: 0.85rem; color: #b2bec3;">提交时间：<span th:text="${#temporals.format(req.submitTime, 'yyyy-MM-dd HH:mm')}"></span></div>
+                
+                <div th:if="${req.status == 'COMPLETED'}" class="feedback-box">
+                    <div style="color: #636e72; font-size: 0.9rem; margin-bottom: 8px;"><strong>物业反馈：</strong></div>
+                    <div th:text="${req.staffFeedbackText}">处理结果...</div>
+                    <img th:if="${req.staffFeedbackImage}" th:src="${req.staffFeedbackImage}" 
+                         style="max-width: 200px; border-radius: 8px; margin-top: 15px; border: 4px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </div>
             </div>
         </div>
     </div>

@@ -1,13 +1,7 @@
 package com.example.propertymanagement.controller;
 
-import com.example.propertymanagement.entity.Admin;
-import com.example.propertymanagement.entity.Resident;
-import com.example.propertymanagement.entity.Staff;
-import com.example.propertymanagement.entity.RepairRequest;
-import com.example.propertymanagement.repository.AdminRepository;
-import com.example.propertymanagement.repository.ResidentRepository;
-import com.example.propertymanagement.repository.StaffRepository;
-import com.example.propertymanagement.repository.RepairRequestRepository;
+import com.example.propertymanagement.entity.*;
+import com.example.propertymanagement.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +25,12 @@ public class AdminController {
     @Autowired
     private StaffRepository staffRepository;
 
+    @Autowired
+    private BuildingRepository buildingRepository;
+
+    @Autowired
+    private RoomRepository roomRepository;
+
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
         model.addAttribute("residentCount", residentRepository.count());
@@ -44,6 +44,9 @@ public class AdminController {
     @GetMapping("/residents")
     public String listResidents(Model model) {
         model.addAttribute("residents", residentRepository.findAll());
+        model.addAttribute("vacantRooms", roomRepository.findAll().stream()
+                .filter(r -> "VACANT".equals(r.getStatus()))
+                .collect(java.util.stream.Collectors.toList()));
         return "admin/residents";
     }
 
@@ -57,6 +60,69 @@ public class AdminController {
     public String deleteResident(@PathVariable Long id) {
         residentRepository.deleteById(id);
         return "redirect:/admin/residents";
+    }
+
+    @PostMapping("/residents/bind")
+    public String bindResidentRoom(@RequestParam Long residentId, @RequestParam Long roomId) {
+        Resident resident = residentRepository.findById(residentId).orElse(null);
+        Room room = roomRepository.findById(roomId).orElse(null);
+        if (resident != null && room != null) {
+            resident.addRoom(room);
+            room.setStatus("OCCUPIED");
+            residentRepository.save(resident);
+            roomRepository.save(room);
+        }
+        return "redirect:/admin/residents";
+    }
+
+    // --- Building Management ---
+    @GetMapping("/buildings")
+    public String listBuildings(Model model) {
+        model.addAttribute("buildings", buildingRepository.findAll());
+        return "admin/buildings";
+    }
+
+    @PostMapping("/buildings/add")
+    public String addBuilding(@ModelAttribute Building building) {
+        buildingRepository.save(building);
+        return "redirect:/admin/buildings";
+    }
+
+    @PostMapping("/buildings/delete/{id}")
+    public String deleteBuilding(@PathVariable Long id) {
+        buildingRepository.deleteById(id);
+        return "redirect:/admin/buildings";
+    }
+
+    // --- Room Management ---
+    @GetMapping("/rooms")
+    public String listRooms(@RequestParam(required = false) Long buildingId, Model model) {
+        if (buildingId != null) {
+            model.addAttribute("rooms", roomRepository.findByBuildingId(buildingId));
+            model.addAttribute("selectedBuilding", buildingRepository.findById(buildingId).orElse(null));
+        } else {
+            model.addAttribute("rooms", roomRepository.findAll());
+        }
+        model.addAttribute("buildings", buildingRepository.findAll());
+        return "admin/rooms";
+    }
+
+    @PostMapping("/rooms/add")
+    public String addRoom(@ModelAttribute Room room, @RequestParam Long buildingId) {
+        Building building = buildingRepository.findById(buildingId).orElse(null);
+        if (building != null) {
+            room.setBuilding(building);
+            roomRepository.save(room);
+        }
+        return "redirect:/admin/rooms?buildingId=" + buildingId;
+    }
+
+    @PostMapping("/rooms/delete/{id}")
+    public String deleteRoom(@PathVariable Long id) {
+        Room room = roomRepository.findById(id).orElse(null);
+        Long bId = (room != null && room.getBuilding() != null) ? room.getBuilding().getId() : null;
+        roomRepository.deleteById(id);
+        return bId != null ? "redirect:/admin/rooms?buildingId=" + bId : "redirect:/admin/rooms";
     }
 
     // --- Staff Management ---

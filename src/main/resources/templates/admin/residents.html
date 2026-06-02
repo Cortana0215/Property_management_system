@@ -2,61 +2,102 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>物业管理后台 - 住户管理</title>
+    <title>住户管理 - 物业管理系统</title>
     <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
 <body>
     <div class="sidebar">
-        <h2>物业管理系统</h2>
-        <a th:href="@{/admin/dashboard}">仪表盘</a>
-        <a th:href="@{/admin/residents}">住户信息管理</a>
-        <a th:href="@{/admin/staff}">职工信息管理</a>
-        <a th:href="@{/admin/admins}">管理员账号管理</a>
-        <a th:href="@{/admin/repairs}">报修任务管理</a>
-        <a th:href="@{/logout}" style="margin-top: 50px; background-color: #c0392b;">退出登录</a>
+        <div class="sidebar-header">
+            <h2>物业管理系统</h2>
+        </div>
+        <div class="sidebar-menu">
+            <a th:href="@{/admin/dashboard}">仪表盘</a>
+            <a th:href="@{/admin/buildings}">楼栋管理</a>
+            <a th:href="@{/admin/rooms}">房屋管理</a>
+            <a th:href="@{/admin/residents}" class="active">住户管理</a>
+            <a th:href="@{/admin/staff}">职工管理</a>
+            <a th:href="@{/admin/admins}">管理员账号</a>
+            <a th:href="@{/admin/repairs}">报修任务</a>
+            <a th:href="@{/logout}" style="margin-top: 40px; color: #f56565;">退出系统</a>
+        </div>
     </div>
 
     <div class="content">
         <h1>住户信息管理</h1>
         
-        <div class="form-container">
-            <h3>添加新住户</h3>
-            <form th:action="@{/admin/residents/add}" method="post">
-                <input type="text" name="name" placeholder="姓名" required>
-                <input type="text" name="phone" placeholder="联系电话" required>
-                <input type="text" name="apartmentNumber" placeholder="房号" required>
-                <input type="text" name="username" placeholder="登录账号" required>
-                <input type="password" name="password" placeholder="登录密码" required>
-                <button type="submit" class="btn">添加</button>
+        <div class="card">
+            <div class="card-title">新住户开户</div>
+            <form th:action="@{/admin/residents/add}" method="post" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                <div>
+                    <label>姓名</label>
+                    <input type="text" name="name" placeholder="请输入姓名" required>
+                </div>
+                <div>
+                    <label>联系电话</label>
+                    <input type="text" name="phone" placeholder="请输入手机号" required>
+                </div>
+                <div>
+                    <label>备注房号 (旧版)</label>
+                    <input type="text" name="apartmentNumber" placeholder="手动输入房号">
+                </div>
+                <div>
+                    <label>登录账号</label>
+                    <input type="text" name="username" placeholder="建议使用手机号" required>
+                </div>
+                <div>
+                    <label>初始密码</label>
+                    <input type="password" name="password" placeholder="请输入密码" required>
+                </div>
+                <div style="display: flex; align-items: flex-end;">
+                    <button type="submit" class="btn btn-primary" style="width: 100%; height: 48px;">立即开户</button>
+                </div>
             </form>
         </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>姓名</th>
-                    <th>联系电话</th>
-                    <th>房号</th>
-                    <th>登录账号</th>
-                    <th>操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="resident : ${residents}">
-                    <td th:text="${resident.id}">1</td>
-                    <td th:text="${resident.name}">张三</td>
-                    <td th:text="${resident.phone}">13800138000</td>
-                    <td th:text="${resident.apartmentNumber}">3栋2单元401</td>
-                    <td th:text="${resident.username}">zhangsan</td>
-                    <td>
-                        <form th:action="@{/admin/residents/delete/{id}(id=${resident.id})}" method="post" style="display:inline;">
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('确定要删除吗？')">删除</button>
-                        </form>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="card">
+            <div class="card-title">住户名册</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>姓名</th>
+                        <th>联系电话</th>
+                        <th>已绑定房屋</th>
+                        <th>账号</th>
+                        <th>快速绑定</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="resident : ${residents}">
+                        <td><strong th:text="${resident.name}"></strong></td>
+                        <td th:text="${resident.phone}"></td>
+                        <td>
+                            <div th:each="room : ${resident.rooms}" style="margin-bottom: 5px;">
+                                <span class="btn" style="background: #e0f2fe; color: #0369a1; font-size: 0.8rem; pointer-events: none;" 
+                                      th:text="${room.building.name} + ' ' + ${room.unitNumber} + ' - ' + ${room.roomNumber}"></span>
+                            </div>
+                            <span th:if="${#lists.isEmpty(resident.rooms)}" style="color: var(--danger); font-size: 0.85rem;">× 未绑定房屋</span>
+                        </td>
+                        <td th:text="${resident.username}" style="color: var(--text-muted); font-family: monospace;"></td>
+                        <td>
+                            <form th:action="@{/admin/residents/bind}" method="post" style="display: flex; gap: 5px;">
+                                <input type="hidden" name="residentId" th:value="${resident.id}">
+                                <select name="roomId" required style="padding: 5px; font-size: 0.8rem; width: 140px;">
+                                    <option value="">选择空房...</option>
+                                    <option th:each="r : ${vacantRooms}" th:value="${r.id}" th:text="${r.building.name} + ' ' + ${r.roomNumber}"></option>
+                                </select>
+                                <button type="submit" class="btn btn-success" style="padding: 5px 10px; font-size: 0.8rem;">绑定</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form th:action="@{/admin/residents/delete/{id}(id=${resident.id})}" method="post">
+                                <button type="submit" class="btn btn-danger" style="padding: 4px 10px; font-size: 0.75rem;" onclick="return confirm('确定注销该住户账号吗？')">注销</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </body>
 </html>

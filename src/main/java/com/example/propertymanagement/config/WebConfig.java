@@ -35,7 +35,7 @@ public class WebConfig implements WebMvcConfigurer {
 
         // Resident routes
         registry.addInterceptor(userInterceptor)
-                .addPathPatterns("/", "/report", "/report-success")
+                .addPathPatterns("/", "/report", "/report-success", "/profile", "/profile/update")
                 .excludePathPatterns("/login", "/user/login", "/logout", "/css/**", "/images/**", "/uploads/**");
     }
 

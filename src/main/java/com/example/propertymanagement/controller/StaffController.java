@@ -46,14 +46,14 @@ public class StaffController {
     @PostMapping("/tasks/complete/{id}")
     public String completeTask(@PathVariable Long id, 
                                @RequestParam String feedback, 
-                               @RequestParam("image") MultipartFile image) {
+                               @RequestParam(value = "image", required = false) MultipartFile image) {
         RepairRequest request = repairRequestRepository.findById(id).orElse(null);
         if (request != null) {
             request.setStaffFeedbackText(feedback);
             request.setStatus("COMPLETED");
             request.setCompleteTime(LocalDateTime.now());
 
-            if (!image.isEmpty()) {
+            if (image != null && !image.isEmpty()) {
                 try {
                     String fileName = UUID.randomUUID().toString() + "_" + image.getOriginalFilename();
                     Path path = Paths.get(UPLOAD_DIR + fileName);

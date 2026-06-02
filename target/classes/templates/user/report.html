@@ -2,43 +2,53 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>公共设施报修 - 物业服务</title>
+    <title>提交报修 - 智慧物业</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/user.css}">
 </head>
 <body>
     <div class="navbar">
-        <h1>公共设施报修</h1>
+        <h1>设施在线报修</h1>
+        <div>
+            <a th:href="@{/}" style="color: white; text-decoration: none; font-weight: 600;">返回首页</a>
+        </div>
     </div>
     
     <div class="container">
-        <p>请详细描述您发现的设施损坏情况，以便我们尽快安排人员维修。</p>
-        
-        <form th:action="@{/report}" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <label>您的姓名</label>
-                <input type="text" name="submitterName" th:value="${session.loggedInUser.name}" readonly required>
-            </div>
+        <div class="form-container-centered">
+            <h2 style="margin-top: 0; color: #1a365d; margin-bottom: 10px;">申报故障</h2>
+            <p style="color: #7f8c8d; margin-bottom: 30px;">请详细描述故障位置及情况，我们将尽快安排师傅上门。</p>
             
-            <div class="form-group">
-                <label>联系电话</label>
-                <input type="text" name="contactPhone" th:value="${session.loggedInUser.phone}" required>
-            </div>
-            
-            <div class="form-group">
-                <label>损坏情况描述</label>
-                <textarea name="facilityDescription" required placeholder="请说明损坏设施的位置和具体情况..."></textarea>
-            </div>
+            <form th:action="@{/report}" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>报修人</label>
+                    <input type="text" name="submitterName" th:value="${session.loggedInUser.name}" readonly style="background-color: #f8fafc; cursor: not-allowed;">
+                </div>
+                
+                <div class="form-group">
+                    <label>联系电话</label>
+                    <input type="tel" name="contactPhone" th:value="${session.loggedInUser.phone}" required placeholder="请输入您的联系方式">
+                </div>
+                
+                <div class="form-group">
+                    <label>故障描述</label>
+                    <textarea name="facilityDescription" required rows="4" placeholder="请说明损坏设施的具体位置（如：1栋大堂灯不亮）及详细情况..."></textarea>
+                </div>
 
-            <div class="form-group">
-                <label>上传照片 (可选)</label>
-                <input type="file" name="image" accept="image/*" style="margin-top: 5px;">
-            </div>
-            
-            <button type="submit" class="btn-primary">提交报修</button>
-        </form>
-        
-        <a th:href="@{/}" class="back-link">&larr; 返回首页</a>
+                <div class="form-group">
+                    <label>上传照片证据</label>
+                    <div style="border: 2px dashed #e2e8f0; padding: 20px; border-radius: 12px; text-align: center;">
+                        <input type="file" name="image" accept="image/*" style="max-width: 100%;">
+                        <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 10px;">支持 JPG, PNG 格式图片，大小不超过 10MB</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 40px; display: flex; gap: 15px;">
+                    <button type="submit" class="btn-primary" style="flex: 2;">提交报修工单</button>
+                    <a th:href="@{/}" class="btn-primary" style="flex: 1; background: #f1f5f9; color: #475569; text-align: center;">取消</a>
+                </div>
+            </form>
+        </div>
     </div>
 </body>
 </html>
