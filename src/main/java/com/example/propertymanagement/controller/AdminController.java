@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 
@@ -173,7 +174,7 @@ public class AdminController {
     }
 
     @PostMapping("/repairs/assign/{id}")
-    public String assignRepair(@PathVariable Long id, @RequestParam Long staffId) {
+    public String assignRepair(@PathVariable Long id, @RequestParam Long staffId, RedirectAttributes ra) {
         RepairRequest request = repairRequestRepository.findById(id).orElse(null);
         Staff staff = staffRepository.findById(staffId).orElse(null);
         if (request != null && staff != null) {
@@ -182,16 +183,25 @@ public class AdminController {
             request.setStatus("ASSIGNED");
             request.setAssignTime(LocalDateTime.now());
             repairRequestRepository.save(request);
+            ra.addFlashAttribute("message", "指派成功");
         }
         return "redirect:/admin/repairs";
     }
 
+    @PostMapping("/repairs/delete/{id}")
+    public String deleteRepair(@PathVariable Long id, RedirectAttributes ra) {
+        repairRequestRepository.deleteById(id);
+        ra.addFlashAttribute("message", "记录已删除");
+        return "redirect:/admin/repairs";
+    }
+
     @PostMapping("/repairs/update/{id}")
-    public String updateRepairStatus(@PathVariable Long id, @RequestParam String status) {
+    public String updateRepairStatus(@PathVariable Long id, @RequestParam String status, RedirectAttributes ra) {
         RepairRequest request = repairRequestRepository.findById(id).orElse(null);
         if (request != null) {
             request.setStatus(status);
             repairRequestRepository.save(request);
+            ra.addFlashAttribute("message", "状态已更新");
         }
         return "redirect:/admin/repairs";
     }
@@ -223,13 +233,21 @@ public class AdminController {
     }
 
     @PostMapping("/complaints/handle/{id}")
-    public String handleComplaint(@PathVariable Long id, @RequestParam String feedback, @RequestParam String status) {
+    public String handleComplaint(@PathVariable Long id, @RequestParam String feedback, @RequestParam String status, RedirectAttributes ra) {
         Complaint complaint = complaintRepository.findById(id).orElse(null);
         if (complaint != null) {
             complaint.setResultFeedback(feedback);
             complaint.setStatus(status);
             complaintRepository.save(complaint);
+            ra.addFlashAttribute("message", "回复成功");
         }
+        return "redirect:/admin/complaints";
+    }
+
+    @PostMapping("/complaints/delete/{id}")
+    public String deleteComplaint(@PathVariable Long id, RedirectAttributes ra) {
+        complaintRepository.deleteById(id);
+        ra.addFlashAttribute("message", "记录已删除");
         return "redirect:/admin/complaints";
     }
 }

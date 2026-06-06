@@ -75,14 +75,14 @@
                         <td th:text="${repair.staffName != null ? repair.staffName : '未指派'}">人员</td>
                         <td>
                             <div th:if="${repair.rating != null}">
-                                <span style="color: #f6ad55;" th:text="${'⭐'.repeat(repair.rating)}"></span>
+                                <span style="color: #f6ad55;" th:text="${repair.rating > 0 ? '⭐'.repeat(repair.rating) : ''}"></span>
                                 <div style="font-size: 0.75rem; color: var(--text-muted);" th:text="${repair.residentFeedback}"></div>
                             </div>
                             <span th:if="${repair.status == 'COMPLETED' && repair.rating == null}" style="color: #cbd5e0; font-size: 0.75rem;">暂无评价</span>
                         </td>
                         <td style="font-size: 0.75rem; color: var(--text-muted);">
-                            <div>提: <span th:text="${#temporals.format(repair.submitTime, 'MM-dd HH:mm')}"></span></div>
-                            <div th:if="${repair.completeTime}">完: <span th:text="${#temporals.format(repair.completeTime, 'MM-dd HH:mm')}"></span></div>
+                            <div>提: <span th:if="${repair.submitTime != null}" th:text="${#temporals.format(repair.submitTime, 'MM-dd HH:mm')}"></span><span th:unless="${repair.submitTime != null}">-</span></div>
+                            <div th:if="${repair.completeTime}">完: <span th:if="${repair.completeTime != null}" th:text="${#temporals.format(repair.completeTime, 'MM-dd HH:mm')}"></span><span th:unless="${repair.completeTime != null}">-</span></div>
                         </td>
                         <td>
                             <div th:if="${repair.status == 'PENDING'}">
@@ -94,8 +94,18 @@
                                     <button type="submit" class="btn btn-primary" style="padding: 4px 10px; font-size: 0.75rem;">确认指派</button>
                                 </form>
                             </div>
-                            <div th:if="${repair.status == 'COMPLETED'}">
-                                <button class="btn" style="background: #f1f5f9; color: #475569; font-size: 0.75rem;" th:onclick="'alert(\'反馈内容：' + ${repair.staffFeedbackText} + '\')'">查看反馈</button>
+                            <div th:if="${repair.status == 'COMPLETED'}" style="display: flex; gap: 5px;">
+                                <button class="btn" style="background: #f1f5f9; color: #475569; font-size: 0.75rem;" 
+                                        th:data-feedback="${repair.staffFeedbackText}"
+                                        onclick="showFeedback(this)">反馈</button>
+                                <form th:action="@{/admin/repairs/delete/{id}(id=${repair.id})}" method="post" onsubmit="return confirm('确定要删除吗？')">
+                                    <button type="submit" class="btn btn-danger" style="padding: 4px 10px; font-size: 0.75rem;">删除</button>
+                                </form>
+                            </div>
+                            <div th:unless="${repair.status == 'COMPLETED'}" th:if="${repair.status != 'PENDING'}">
+                                <form th:action="@{/admin/repairs/delete/{id}(id=${repair.id})}" method="post" onsubmit="return confirm('确定要删除吗？')">
+                                    <button type="submit" class="btn btn-danger" style="padding: 4px 10px; font-size: 0.75rem;">删除</button>
+                                </form>
                             </div>
                         </td>
                     </tr>
@@ -103,5 +113,11 @@
             </table>
         </div>
     </div>
+    <script>
+        function showFeedback(btn) {
+            const feedback = btn.getAttribute('data-feedback');
+            alert('反馈内容：' + (feedback || '无'));
+        }
+    </script>
 </body>
 </html>

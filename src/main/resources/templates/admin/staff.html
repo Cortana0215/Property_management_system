@@ -2,60 +2,84 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>物业管理后台 - 职工管理</title>
+    <title>职工管理 - 物业管理系统</title>
     <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
 <body>
     <div class="sidebar">
-        <h2>物业管理系统</h2>
-        <a th:href="@{/admin/dashboard}">仪表盘</a>
-        <a th:href="@{/admin/buildings}">小区楼栋管理</a>
-        <a th:href="@{/admin/rooms}">房屋信息管理</a>
-        <a th:href="@{/admin/residents}">住户信息管理</a>
-        <a th:href="@{/admin/staff}">职工信息管理</a>
-        <a th:href="@{/admin/admins}">管理员账号管理</a>
-        <a th:href="@{/admin/repairs}">报修任务管理</a>
-        <a th:href="@{/logout}" style="margin-top: 50px; background-color: #c0392b;">退出登录</a>
+        <div class="sidebar-header">
+            <h2>物业管理系统</h2>
+        </div>
+        <div class="sidebar-menu">
+            <a th:href="@{/admin/dashboard}">仪表盘</a>
+            <a th:href="@{/admin/buildings}">楼栋管理</a>
+            <a th:href="@{/admin/rooms}">房屋管理</a>
+            <a th:href="@{/admin/residents}">住户管理</a>
+            <a th:href="@{/admin/staff}" class="active">职工管理</a>
+            <a th:href="@{/admin/notices}">公告管理</a>
+            <a th:href="@{/admin/complaints}">投诉管理</a>
+            <a th:href="@{/admin/admins}">管理员账号</a>
+            <a th:href="@{/admin/repairs}">报修任务</a>
+            <a th:href="@{/logout}" style="margin-top: 40px; color: #f56565;">退出系统</a>
+        </div>
     </div>
 
     <div class="content">
         <h1>职工信息管理</h1>
         
-        <div class="form-container">
-            <h3>添加新职工</h3>
-            <form th:action="@{/admin/staff/add}" method="post">
-                <input type="text" name="name" placeholder="姓名" required>
-                <input type="text" name="phone" placeholder="联系电话" required>
-                <input type="text" name="username" placeholder="登录账号" required>
-                <input type="password" name="password" placeholder="登录密码" required>
-                <button type="submit" class="btn">添加</button>
+        <div class="card">
+            <div class="card-title">添加新职工</div>
+            <form th:action="@{/admin/staff/add}" method="post" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                <div>
+                    <label>姓名</label>
+                    <input type="text" name="name" placeholder="请输入姓名" required>
+                </div>
+                <div>
+                    <label>联系电话</label>
+                    <input type="text" name="phone" placeholder="请输入手机号" required>
+                </div>
+                <div>
+                    <label>登录账号</label>
+                    <input type="text" name="username" placeholder="请输入账号" required>
+                </div>
+                <div>
+                    <label>登录密码</label>
+                    <input type="password" name="password" placeholder="请输入密码" required>
+                </div>
+                <div style="display: flex; align-items: flex-end; grid-column: span 2;">
+                    <button type="submit" class="btn btn-primary" style="width: 100%; height: 48px;">立即录入职工信息</button>
+                </div>
             </form>
         </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>姓名</th>
-                    <th>联系电话</th>
-                    <th>登录账号</th>
-                    <th>操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="staff : ${staffList}">
-                    <td th:text="${staff.id}">1</td>
-                    <td th:text="${staff.name}">张三</td>
-                    <td th:text="${staff.phone}">13800138000</td>
-                    <td th:text="${staff.username}">zhangsan</td>
-                    <td>
-                        <form th:action="@{/admin/staff/delete/{id}(id=${staff.id})}" method="post" style="display:inline;">
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('确定要删除吗？')">删除</button>
-                        </form>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="card">
+            <div class="card-title">职工名册</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>姓名</th>
+                        <th>联系电话</th>
+                        <th>登录账号</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="staff : ${staffList}">
+                        <td th:text="${staff.id}"></td>
+                        <td><strong th:text="${staff.name}"></strong></td>
+                        <td th:text="${staff.phone}"></td>
+                        <td th:text="${staff.username}" style="color: var(--text-muted); font-family: monospace;"></td>
+                        <td>
+                            <form th:action="@{/admin/staff/delete/{id}(id=${staff.id})}" method="post">
+                                <button type="submit" class="btn btn-danger" style="padding: 6px 12px; font-size: 0.8rem;" onclick="return confirm('确定要删除该职工信息吗？')">删除</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
+    <script th:src="@{/js/main.js}"></script>
 </body>
 </html>

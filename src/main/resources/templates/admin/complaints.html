@@ -48,7 +48,10 @@
                             <div th:text="${c.submitterName}"></div>
                             <div th:text="${c.contactPhone}" style="font-size: 0.8rem; color: var(--text-muted);"></div>
                         </td>
-                        <td th:text="${#temporals.format(c.submitTime, 'yyyy-MM-dd HH:mm')}"></td>
+                        <td>
+                            <span th:if="${c.submitTime != null}" th:text="${#temporals.format(c.submitTime, 'yyyy-MM-dd HH:mm')}"></span>
+                            <span th:unless="${c.submitTime != null}">-</span>
+                        </td>
                         <td>
                             <span th:text="${c.status == 'PENDING' ? '待处理' : (c.status == 'PROCESSING' ? '处理中' : '已解决')}" 
                                   th:style="${c.status == 'RESOLVED' ? 'color: var(--success)' : 'color: #f6ad55'}"></span>
@@ -68,9 +71,12 @@
                                 </form>
                             </div>
 
-                            <div th:if="${c.status == 'RESOLVED'}" style="font-size: 0.85rem; color: var(--text-muted);">
+                            <div th:if="${c.status == 'RESOLVED'}" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;">
                                 <strong>已回复：</strong> <span th:text="${c.resultFeedback}"></span>
                             </div>
+                            <form th:action="@{/admin/complaints/delete/{id}(id=${c.id})}" method="post" onsubmit="return confirm('确定要删除吗？')">
+                                <button type="submit" class="btn btn-danger" style="padding: 5px 10px; font-size: 0.75rem;">删除记录</button>
+                            </form>
                         </td>
                     </tr>
                 </tbody>

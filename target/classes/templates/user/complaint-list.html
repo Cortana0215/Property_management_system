@@ -28,7 +28,7 @@
             
             <div style="font-weight: 800; font-size: 1.15rem;" th:text="${c.title}">标题</div>
             <p th:text="${c.content}" style="color: #475569; margin: 10px 0;"></p>
-            <div style="font-size: 0.85rem; color: #b2bec3;">提交时间：<span th:text="${#temporals.format(c.submitTime, 'yyyy-MM-dd HH:mm')}"></span></div>
+            <div style="font-size: 0.85rem; color: #b2bec3;">提交时间：<span th:if="${c.submitTime != null}" th:text="${#temporals.format(c.submitTime, 'yyyy-MM-dd HH:mm')}"></span><span th:unless="${c.submitTime != null}">-</span></div>
             
             <div th:if="${c.status == 'RESOLVED'}" class="feedback-box" style="border-left: 4px solid var(--success);">
                 <div style="color: #155724; font-size: 0.9rem; margin-bottom: 8px;"><strong>物业回复：</strong></div>

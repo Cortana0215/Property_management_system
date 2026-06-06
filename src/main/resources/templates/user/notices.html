@@ -55,7 +55,7 @@
                 <div>
                     <h2 class="notice-title" th:text="${n.title}"></h2>
                     <div class="notice-meta">
-                        发布时间：<span th:text="${#temporals.format(n.createTime, 'yyyy-MM-dd HH:mm')}"></span>
+                        发布时间：<span th:if="${n.createTime != null}" th:text="${#temporals.format(n.createTime, 'yyyy-MM-dd HH:mm')}"></span><span th:unless="${n.createTime != null}">-</span>
                         | 发布人：<span th:text="${n.publisherName}"></span>
                     </div>
                 </div>

@@ -69,7 +69,7 @@
                      th:text="${req.status == 'COMPLETED' ? '已完结' : (req.status == 'ASSIGNED' ? '处理中' : '待指派')}">状态</div>
                 
                 <div style="font-weight: 800; font-size: 1.15rem;" th:text="${req.facilityDescription}">描述</div>
-                <div style="font-size: 0.85rem; color: #b2bec3;">提交时间：<span th:text="${#temporals.format(req.submitTime, 'yyyy-MM-dd HH:mm')}"></span></div>
+                <div style="font-size: 0.85rem; color: #b2bec3;">提交时间：<span th:if="${req.submitTime != null}" th:text="${#temporals.format(req.submitTime, 'yyyy-MM-dd HH:mm')}"></span><span th:unless="${req.submitTime != null}">-</span></div>
                 
                 <div th:if="${req.status == 'COMPLETED'}" class="feedback-box">
                     <div style="color: #636e72; font-size: 0.9rem; margin-bottom: 8px;"><strong>物业反馈：</strong></div>
