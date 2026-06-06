@@ -42,40 +42,43 @@
                     <tr th:each="c : ${complaints}">
                         <td>
                             <strong th:text="${c.title}"></strong>
-                            <p th:text="${c.content}" style="font-size: 0.85rem; color: var(--text-muted);"></p>
+                            <p th:text="${c.content}" style="margin: 5px 0 0 0; color: #666;"></p>
                         </td>
                         <td>
                             <div th:text="${c.submitterName}"></div>
-                            <div th:text="${c.contactPhone}" style="font-size: 0.8rem; color: var(--text-muted);"></div>
+                            <div th:text="${c.contactPhone}" style="color: #666;"></div>
                         </td>
                         <td>
                             <span th:if="${c.submitTime != null}" th:text="${#temporals.format(c.submitTime, 'yyyy-MM-dd HH:mm')}"></span>
                             <span th:unless="${c.submitTime != null}">-</span>
                         </td>
                         <td>
-                            <span th:text="${c.status == 'PENDING' ? '待处理' : (c.status == 'PROCESSING' ? '处理中' : '已解决')}" 
-                                  th:style="${c.status == 'RESOLVED' ? 'color: var(--success)' : 'color: #f6ad55'}"></span>
+                            <span th:text="${c.status == 'PENDING' ? '待处理' : (c.status == 'PROCESSING' ? '处理中' : '已解决')}"></span>
                         </td>
                         <td>
-                            <button th:if="${c.status != 'RESOLVED'}" class="btn btn-primary" style="padding: 5px 10px;" 
+                            <button th:if="${c.status != 'RESOLVED'}" class="btn btn-primary" 
                                     th:onclick="'document.getElementById(\'handle-form-' + ${c.id} + '\').style.display = \'block\''">回复处理</button>
                             
-                            <div th:id="'handle-form-' + ${c.id}" style="display: none; margin-top: 10px; background: #f8fafc; padding: 15px; border-radius: 8px;">
+                            <div th:id="'handle-form-' + ${c.id}" style="display: none; margin-top: 10px; padding: 10px; border: 1px solid #ccc;">
                                 <form th:action="@{/admin/complaints/handle/{id}(id=${c.id})}" method="post">
-                                    <textarea name="feedback" placeholder="输入处理反馈内容..." required style="margin-bottom: 10px;"></textarea>
-                                    <select name="status" style="width: 150px; margin-bottom: 10px;">
-                                        <option value="PROCESSING">设为处理中</option>
-                                        <option value="RESOLVED">标记为已解决</option>
-                                    </select>
+                                    <div class="form-group">
+                                        <textarea name="feedback" placeholder="输入处理反馈内容..." required></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <select name="status">
+                                            <option value="PROCESSING">设为处理中</option>
+                                            <option value="RESOLVED">标记为已解决</option>
+                                        </select>
+                                    </div>
                                     <button type="submit" class="btn btn-success">提交反馈</button>
                                 </form>
                             </div>
 
-                            <div th:if="${c.status == 'RESOLVED'}" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;">
+                            <div th:if="${c.status == 'RESOLVED'}" style="margin-top: 5px; color: #666;">
                                 <strong>已回复：</strong> <span th:text="${c.resultFeedback}"></span>
                             </div>
-                            <form th:action="@{/admin/complaints/delete/{id}(id=${c.id})}" method="post" onsubmit="return confirm('确定要删除吗？')">
-                                <button type="submit" class="btn btn-danger" style="padding: 5px 10px; font-size: 0.75rem;">删除记录</button>
+                            <form th:action="@{/admin/complaints/delete/{id}(id=${c.id})}" method="post" style="margin-top: 5px;" onsubmit="return confirm('确定要删除吗？')">
+                                <button type="submit" class="btn btn-danger">删除记录</button>
                             </form>
                         </td>
                     </tr>

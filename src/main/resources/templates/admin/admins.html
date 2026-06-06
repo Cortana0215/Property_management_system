@@ -7,43 +7,65 @@
 </head>
 <body>
     <div class="sidebar">
-        <h2>物业管理系统</h2>
-        <a th:href="@{/admin/dashboard}">仪表盘</a>
-        <a th:href="@{/admin/buildings}">小区楼栋管理</a>
-        <a th:href="@{/admin/rooms}">房屋信息管理</a>
-        <a th:href="@{/admin/residents}">住户信息管理</a>
-        <a th:href="@{/admin/staff}">职工信息管理</a>
-        <a th:href="@{/admin/admins}">管理员账号管理</a>
-        <a th:href="@{/admin/repairs}">报修任务管理</a>
-        <a th:href="@{/logout}" style="margin-top: 50px; background-color: #c0392b;">退出登录</a>
+        <div class="sidebar-header">
+            <h2>物业管理系统</h2>
+        </div>
+        <div class="sidebar-menu">
+            <a th:href="@{/admin/dashboard}">仪表盘</a>
+            <a th:href="@{/admin/buildings}">楼栋管理</a>
+            <a th:href="@{/admin/rooms}">房屋管理</a>
+            <a th:href="@{/admin/residents}">住户管理</a>
+            <a th:href="@{/admin/staff}">职工管理</a>
+            <a th:href="@{/admin/notices}">公告管理</a>
+            <a th:href="@{/admin/complaints}">投诉管理</a>
+            <a th:href="@{/admin/admins}" class="active">管理员账号</a>
+            <a th:href="@{/admin/repairs}">报修任务</a>
+            <a th:href="@{/logout}" style="margin-top: 40px; color: #f56565;">退出系统</a>
+        </div>
     </div>
 
     <div class="content">
-        <h1>管理员账号管理</h1>
-        
-        <div class="form-container">
-            <h3>添加新管理员</h3>
+        <h1>管理员账户管理</h1>
+
+        <div class="card">
+            <div class="card-title">新增系统管理员</div>
             <form th:action="@{/admin/admins/add}" method="post">
-                <input type="text" name="username" placeholder="登录账号" required>
-                <input type="password" name="password" placeholder="登录密码" required>
-                <button type="submit" class="btn">添加</button>
+                <div class="form-group">
+                    <label>登录用户名</label>
+                    <input type="text" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label>登录密码</label>
+                    <input type="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">创建管理员</button>
             </form>
         </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>登录账号</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="admin : ${admins}">
-                    <td th:text="${admin.id}">1</td>
-                    <td th:text="${admin.username}">admin</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="card">
+            <div class="card-title">系统管理员列表</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>用户名</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="admin : ${admins}">
+                        <td th:text="${admin.id}"></td>
+                        <td><strong th:text="${admin.username}"></strong></td>
+                        <td>
+                            <span th:if="${admin.username == 'admin'}" style="color: #999;">系统预设</span>
+                            <form th:unless="${admin.username == 'admin'}" th:action="@{/admin/admins/delete/{id}(id=${admin.id})}" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('确定要删除吗？')">删除</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </body>
 </html>

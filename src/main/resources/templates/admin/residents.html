@@ -30,30 +30,28 @@
         
         <div class="card">
             <div class="card-title">新住户开户</div>
-            <form th:action="@{/admin/residents/add}" method="post" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
-                <div>
+            <form th:action="@{/admin/residents/add}" method="post">
+                <div class="form-group">
                     <label>姓名</label>
                     <input type="text" name="name" placeholder="请输入姓名" required>
                 </div>
-                <div>
+                <div class="form-group">
                     <label>联系电话</label>
                     <input type="text" name="phone" placeholder="请输入手机号" required>
                 </div>
-                <div>
+                <div class="form-group">
                     <label>备注房号 (旧版)</label>
                     <input type="text" name="apartmentNumber" placeholder="手动输入房号">
                 </div>
-                <div>
+                <div class="form-group">
                     <label>登录账号</label>
                     <input type="text" name="username" placeholder="建议使用手机号" required>
                 </div>
-                <div>
+                <div class="form-group">
                     <label>初始密码</label>
                     <input type="password" name="password" placeholder="请输入密码" required>
                 </div>
-                <div style="display: flex; align-items: flex-end;">
-                    <button type="submit" class="btn btn-primary" style="width: 100%; height: 48px;">立即开户</button>
-                </div>
+                <button type="submit" class="btn btn-primary">立即开户</button>
             </form>
         </div>
 
@@ -76,25 +74,24 @@
                         <td th:text="${resident.phone}"></td>
                         <td>
                             <div th:each="room : ${resident.rooms}" style="margin-bottom: 5px;">
-                                <span class="btn" style="background: #e0f2fe; color: #0369a1; font-size: 0.8rem; pointer-events: none;" 
-                                      th:text="${room.building.name} + ' ' + ${room.unitNumber} + ' - ' + ${room.roomNumber}"></span>
+                                <span class="btn" th:text="${room.building.name} + ' ' + ${room.unitNumber} + ' - ' + ${room.roomNumber}"></span>
                             </div>
-                            <span th:if="${#lists.isEmpty(resident.rooms)}" style="color: var(--danger); font-size: 0.85rem;">× 未绑定房屋</span>
+                            <span th:if="${#lists.isEmpty(resident.rooms)}">未绑定</span>
                         </td>
-                        <td th:text="${resident.username}" style="color: var(--text-muted); font-family: monospace;"></td>
+                        <td th:text="${resident.username}"></td>
                         <td>
-                            <form th:action="@{/admin/residents/bind}" method="post" style="display: flex; gap: 5px;">
+                            <form th:action="@{/admin/residents/bind}" method="post">
                                 <input type="hidden" name="residentId" th:value="${resident.id}">
-                                <select name="roomId" required style="padding: 5px; font-size: 0.8rem; width: 140px;">
+                                <select name="roomId" required>
                                     <option value="">选择空房...</option>
                                     <option th:each="r : ${vacantRooms}" th:value="${r.id}" th:text="${r.building.name} + ' ' + ${r.roomNumber}"></option>
                                 </select>
-                                <button type="submit" class="btn btn-success" style="padding: 5px 10px; font-size: 0.8rem;">绑定</button>
+                                <button type="submit" class="btn btn-success">绑定</button>
                             </form>
                         </td>
                         <td>
                             <form th:action="@{/admin/residents/delete/{id}(id=${resident.id})}" method="post">
-                                <button type="submit" class="btn btn-danger" style="padding: 4px 10px; font-size: 0.75rem;" onclick="return confirm('确定注销该住户账号吗？')">注销</button>
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('确定注销该住户账号吗？')">注销</button>
                             </form>
                         </td>
                     </tr>

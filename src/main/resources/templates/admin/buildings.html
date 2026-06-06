@@ -29,16 +29,16 @@
 
         <div class="card">
             <div class="card-title">添加新楼栋</div>
-            <form th:action="@{/admin/buildings/add}" method="post" style="display: flex; gap: 20px; align-items: flex-end;">
-                <div style="flex: 1;">
+            <form th:action="@{/admin/buildings/add}" method="post">
+                <div class="form-group">
                     <label>楼栋名称</label>
                     <input type="text" name="name" required placeholder="如：1号楼">
                 </div>
-                <div style="flex: 2;">
+                <div class="form-group">
                     <label>描述备注</label>
                     <input type="text" name="description" placeholder="如：近小区东门，共18层">
                 </div>
-                <button type="submit" class="btn btn-primary" style="height: 48px; padding: 0 30px;">立即添加</button>
+                <button type="submit" class="btn btn-primary">立即添加</button>
             </form>
         </div>
 
@@ -57,16 +57,16 @@
                 <tbody>
                     <tr th:each="b : ${buildings}">
                         <td th:text="${b.id}"></td>
-                        <td><strong th:text="${b.name}"></strong></td>
+                        <td th:text="${b.name}"></td>
                         <td th:text="${b.description}" style="color: var(--text-muted);"></td>
                         <td>
-                            <a th:href="@{/admin/rooms(buildingId=${b.id})}" class="btn" style="background: #edf2f7; color: var(--secondary-color); font-size: 0.8rem;">
-                                查看 <span th:text="${#lists.size(b.rooms)}"></span> 间房屋
+                            <a th:href="@{/admin/rooms(buildingId=${b.id})}" class="btn">
+                                查看房屋 (<span th:text="${#lists.size(b.rooms)}"></span>)
                             </a>
                         </td>
                         <td>
                             <form th:action="@{/admin/buildings/delete/{id}(id=${b.id})}" method="post" onsubmit="return confirm('警告：删除楼栋将同时清空所有所属房屋，是否确定？')">
-                                <button type="submit" class="btn btn-danger" style="padding: 6px 12px; font-size: 0.8rem;">删除</button>
+                                <button type="submit" class="btn btn-danger">删除</button>
                             </form>
                         </td>
                     </tr>
