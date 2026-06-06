@@ -29,26 +29,24 @@
         
         <div class="card">
             <div class="card-title">添加新职工</div>
-            <form th:action="@{/admin/staff/add}" method="post" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
-                <div>
+            <form th:action="@{/admin/staff/add}" method="post">
+                <div class="form-group">
                     <label>姓名</label>
                     <input type="text" name="name" placeholder="请输入姓名" required>
                 </div>
-                <div>
+                <div class="form-group">
                     <label>联系电话</label>
                     <input type="text" name="phone" placeholder="请输入手机号" required>
                 </div>
-                <div>
+                <div class="form-group">
                     <label>登录账号</label>
                     <input type="text" name="username" placeholder="请输入账号" required>
                 </div>
-                <div>
+                <div class="form-group">
                     <label>登录密码</label>
                     <input type="password" name="password" placeholder="请输入密码" required>
                 </div>
-                <div style="display: flex; align-items: flex-end; grid-column: span 2;">
-                    <button type="submit" class="btn btn-primary" style="width: 100%; height: 48px;">立即录入职工信息</button>
-                </div>
+                <button type="submit" class="btn btn-primary">立即录入职工信息</button>
             </form>
         </div>
 
@@ -69,10 +67,10 @@
                         <td th:text="${staff.id}"></td>
                         <td><strong th:text="${staff.name}"></strong></td>
                         <td th:text="${staff.phone}"></td>
-                        <td th:text="${staff.username}" style="color: var(--text-muted); font-family: monospace;"></td>
+                        <td th:text="${staff.username}"></td>
                         <td>
                             <form th:action="@{/admin/staff/delete/{id}(id=${staff.id})}" method="post">
-                                <button type="submit" class="btn btn-danger" style="padding: 6px 12px; font-size: 0.8rem;" onclick="return confirm('确定要删除该职工信息吗？')">删除</button>
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('确定要删除该职工信息吗？')">删除</button>
                             </form>
                         </td>
                     </tr>

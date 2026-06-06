@@ -32,11 +32,11 @@
                 <div class="stat-label">总住户数</div>
                 <div class="stat-value" th:text="${residentCount}">0</div>
             </div>
-            <div class="stat-item" style="border-left-color: #48bb78;">
+            <div class="stat-item">
                 <div class="stat-label">总职工数</div>
                 <div class="stat-value" th:text="${staffCount}">0</div>
             </div>
-            <div class="stat-item" style="border-left-color: #f6ad55;">
+            <div class="stat-item">
                 <div class="stat-label">待处理报修</div>
                 <div class="stat-value" th:text="${pendingRepairs}">0</div>
             </div>
@@ -45,7 +45,7 @@
         <div class="card">
             <div class="card-title">系统状态</div>
             <p>欢迎回来，管理员 <strong><span th:text="${session.loggedInAdmin.username}">admin</span></strong>。</p>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">当前系统运行正常，所有模块已就绪。您可以通过左侧菜单管理小区资产、住户及报修任务。</p>
+            <p style="color: var(--text-muted); font-size: 14px;">当前系统运行正常，所有模块已就绪。您可以通过左侧菜单管理小区资产、住户及报修任务。</p>
         </div>
     </div>
 </body>

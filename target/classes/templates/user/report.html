@@ -9,20 +9,17 @@
 <body>
     <div class="navbar">
         <h1>设施在线报修</h1>
-        <div>
-            <a th:href="@{/}" style="color: white; text-decoration: none; font-weight: 600;">返回首页</a>
-        </div>
+        <a th:href="@{/}" style="color: white; text-decoration: none;">返回首页</a>
     </div>
     
     <div class="container">
         <div class="form-container-centered">
-            <h2 style="margin-top: 0; color: #1a365d; margin-bottom: 10px;">申报故障</h2>
-            <p style="color: #7f8c8d; margin-bottom: 30px;">请详细描述故障位置及情况，我们将尽快安排师傅上门。</p>
+            <h2 style="margin-top: 0; border-bottom: 2px solid #0056b3; padding-bottom: 10px;">申报故障</h2>
             
             <form th:action="@{/report}" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label>报修人</label>
-                    <input type="text" name="submitterName" th:value="${session.loggedInUser.name}" readonly style="background-color: #f8fafc; cursor: not-allowed;">
+                    <input type="text" name="submitterName" th:value="${session.loggedInUser.name}" readonly style="background-color: #eee;">
                 </div>
                 
                 <div class="form-group">
@@ -32,20 +29,17 @@
                 
                 <div class="form-group">
                     <label>故障描述</label>
-                    <textarea name="facilityDescription" required rows="4" placeholder="请说明损坏设施的具体位置（如：1栋大堂灯不亮）及详细情况..."></textarea>
+                    <textarea name="facilityDescription" required rows="4" placeholder="请说明损坏设施的具体位置及详细情况..."></textarea>
                 </div>
 
                 <div class="form-group">
                     <label>上传照片证据</label>
-                    <div style="border: 2px dashed #e2e8f0; padding: 20px; border-radius: 12px; text-align: center;">
-                        <input type="file" name="image" accept="image/*" style="max-width: 100%;">
-                        <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 10px;">支持 JPG, PNG 格式图片，大小不超过 10MB</p>
-                    </div>
+                    <input type="file" name="image" accept="image/*" style="border: none; padding: 0;">
                 </div>
                 
-                <div style="margin-top: 40px; display: flex; gap: 15px;">
-                    <button type="submit" class="btn-primary" style="flex: 2;">提交报修工单</button>
-                    <a th:href="@{/}" class="btn-primary" style="flex: 1; background: #f1f5f9; color: #475569; text-align: center;">取消</a>
+                <div style="margin-top: 20px;">
+                    <button type="submit" class="btn-primary" style="margin-right: 10px;">提交报修工单</button>
+                    <a th:href="@{/}" class="btn-primary" style="background: #e9ecef; color: #333; border-color: #ccc;">取消</a>
                 </div>
             </form>
         </div>

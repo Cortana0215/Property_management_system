@@ -31,11 +31,11 @@
             <form th:action="@{/admin/notices/add}" method="post">
                 <div class="form-group">
                     <label>公告标题</label>
-                    <input type="text" name="title" required placeholder="输入公告标题" style="max-width: 100%;">
+                    <input type="text" name="title" required placeholder="输入公告标题">
                 </div>
                 <div class="form-group">
                     <label>发布对象</label>
-                    <select name="targetRole" required style="width: 200px;">
+                    <select name="targetRole" required>
                         <option value="ALL">全体人员</option>
                         <option value="RESIDENT">仅住户</option>
                         <option value="STAFF">仅职工</option>
@@ -43,7 +43,7 @@
                 </div>
                 <div class="form-group">
                     <label>公告内容</label>
-                    <textarea name="content" rows="6" required placeholder="请输入公告正文..." style="max-width: 100%;"></textarea>
+                    <textarea name="content" rows="6" required placeholder="请输入公告正文..."></textarea>
                 </div>
                 <input type="hidden" name="publisherName" th:value="${session.loggedInAdmin.username}">
                 <button type="submit" class="btn btn-primary">立即发布</button>
@@ -68,11 +68,14 @@
                         <td>
                             <span th:text="${n.targetRole == 'ALL' ? '全体' : (n.targetRole == 'RESIDENT' ? '住户' : '职工')}"></span>
                         </td>
-                        <td th:text="${#temporals.format(n.createTime, 'yyyy-MM-dd HH:mm')}"></td>
+                        <td>
+                            <span th:if="${n.createTime != null}" th:text="${#temporals.format(n.createTime, 'yyyy-MM-dd HH:mm')}"></span>
+                            <span th:unless="${n.createTime != null}">-</span>
+                        </td>
                         <td th:text="${n.publisherName}"></td>
                         <td>
                             <form th:action="@{/admin/notices/delete/{id}(id=${n.id})}" method="post">
-                                <button type="submit" class="btn btn-danger">删除</button>
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('确定要删除吗？')">删除</button>
                             </form>
                         </td>
                     </tr>

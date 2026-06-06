@@ -10,8 +10,8 @@
     <div class="navbar">
         <h1>智慧小区服务平台</h1>
         <div style="display: flex; align-items: center;">
-            <a th:href="@{/profile}" style="color: white; text-decoration: none; font-weight: 600; margin-right: 25px;">个人中心</a>
-            <a th:href="@{/logout}" class="btn-primary" style="background: rgba(255,255,255,0.2); padding: 8px 18px;">退出</a>
+            <a th:href="@{/profile}" style="color: white; text-decoration: none; margin-right: 15px;">个人资料</a>
+            <a th:href="@{/logout}" class="btn-primary" style="background: transparent; border-color: white;">退出</a>
         </div>
     </div>
     
@@ -21,79 +21,71 @@
             <div class="welcome-text">
                 <h2>下午好，<span th:text="${session.loggedInUser.name}">住户</span></h2>
                 <div class="property-info">
-                    <span style="font-weight: 600;">我的房产：</span>
+                    <strong>我的房产：</strong>
                     <span th:each="room : ${myRooms}" class="room-badge" th:text="${room.building.name} + ' ' + ${room.roomNumber}"></span>
-                    <span th:if="${#lists.isEmpty(myRooms)}" style="color: #e74c3c;">暂未绑定房产，请联系物业。</span>
+                    <span th:if="${#lists.isEmpty(myRooms)}" style="color: var(--danger);">暂未绑定房产，请联系物业。</span>
                 </div>
             </div>
-            <a th:href="@{/profile}" class="btn-primary">管理个人资料</a>
+            <a th:href="@{/profile}" class="btn-primary" style="margin-top: 10px;">管理资料</a>
         </div>
         
         <!-- 功能网格 -->
         <div class="action-grid">
             <a th:href="@{/report}" class="action-tile">
-                <div style="font-size: 2.5rem; margin-bottom: 10px;">🛠️</div>
                 <h3>设施报修</h3>
-                <p>公共设备故障快速上报</p>
+                <p>快速上报故障</p>
             </a>
-            <div class="action-tile" style="opacity: 0.6;">
-                <div style="font-size: 2.5rem; margin-bottom: 10px;">💰</div>
-                <h3>物业缴费</h3>
-                <p>在线查缴物业/水电费</p>
-            </div>
             <a th:href="@{/notices}" class="action-tile">
-                <div style="font-size: 2.5rem; margin-bottom: 10px;">📢</div>
                 <h3>社区公告</h3>
-                <p>了解小区最新动态</p>
+                <p>最新小区动态</p>
             </a>
             <a th:href="@{/complaints}" class="action-tile">
-                <div style="font-size: 2.5rem; margin-bottom: 10px;">💬</div>
                 <h3>投诉建议</h3>
-                <p>您的声音让我们更进步</p>
+                <p>您的声音让我们进步</p>
             </a>
             <a th:href="@{/services}" class="action-tile">
-                <div style="font-size: 2.5rem; margin-bottom: 10px;">📞</div>
                 <h3>便民服务</h3>
-                <p>常用电话与周边生活</p>
+                <p>常用电话</p>
             </a>
         </div>
 
         <!-- 报修记录 -->
         <div class="request-list">
-            <h3>近期报修进度</h3>
-            <div th:if="${#lists.isEmpty(myRequests)}" style="background: white; padding: 40px; text-align: center; border-radius: 16px; color: #b2bec3;">
+            <h3 style="border-bottom: 2px solid #ccc; padding-bottom: 10px;">近期报修进度</h3>
+            <div th:if="${#lists.isEmpty(myRequests)}" style="border: 1px solid #ccc; padding: 20px; text-align: center; color: #666;">
                 目前没有报修记录
             </div>
             <div th:each="req : ${myRequests}" class="request-card">
                 <div th:class="'status-tag ' + ${req.status == 'COMPLETED' ? 'status-completed' : (req.status == 'ASSIGNED' ? 'status-assigned' : 'status-pending')}" 
                      th:text="${req.status == 'COMPLETED' ? '已完结' : (req.status == 'ASSIGNED' ? '处理中' : '待指派')}">状态</div>
                 
-                <div style="font-weight: 800; font-size: 1.15rem;" th:text="${req.facilityDescription}">描述</div>
-                <div style="font-size: 0.85rem; color: #b2bec3;">提交时间：<span th:if="${req.submitTime != null}" th:text="${#temporals.format(req.submitTime, 'yyyy-MM-dd HH:mm')}"></span><span th:unless="${req.submitTime != null}">-</span></div>
+                <h3 th:text="${req.facilityDescription}">描述</h3>
+                <div style="font-size: 14px; color: #666;">提交时间：<span th:if="${req.submitTime != null}" th:text="${#temporals.format(req.submitTime, 'yyyy-MM-dd HH:mm')}"></span><span th:unless="${req.submitTime != null}">-</span></div>
                 
-                <div th:if="${req.status == 'COMPLETED'}" class="feedback-box">
-                    <div style="color: #636e72; font-size: 0.9rem; margin-bottom: 8px;"><strong>物业反馈：</strong></div>
-                    <div th:text="${req.staffFeedbackText}">处理结果...</div>
-                    <img th:if="${req.staffFeedbackImage}" th:src="${req.staffFeedbackImage}" 
-                         style="max-width: 200px; border-radius: 8px; margin-top: 15px; border: 4px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                <div th:if="${req.status == 'COMPLETED'}" style="margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 15px;">
+                    <div style="font-size: 14px; margin-bottom: 5px;"><strong>物业反馈：</strong> <span th:text="${req.staffFeedbackText}">处理结果...</span></div>
                     
-                    <div th:if="${req.rating == null}" style="margin-top: 20px; border-top: 1px dashed #d1d8e0; padding-top: 15px;">
+                    <div th:if="${req.rating == null}" style="margin-top: 15px;">
                         <form th:action="@{/repair/rate/{id}(id=${req.id})}" method="post">
-                            <label style="font-size: 0.85rem; font-weight: 700;">服务评价：</label>
-                            <select name="rating" required style="width: auto; padding: 5px; font-size: 0.8rem; margin-bottom: 10px;">
-                                <option value="5">⭐⭐⭐⭐⭐ (非常满意)</option>
-                                <option value="4">⭐⭐⭐⭐ (满意)</option>
-                                <option value="3">⭐⭐⭐ (一般)</option>
-                                <option value="2">⭐⭐ (不满意)</option>
-                                <option value="1">⭐ (非常不满意)</option>
-                            </select>
-                            <textarea name="feedback" placeholder="写下您的评价内容..." rows="2" style="font-size: 0.85rem; margin-bottom: 10px;"></textarea>
-                            <button type="submit" class="btn-primary" style="padding: 5px 15px; font-size: 0.8rem;">提交评价</button>
+                            <div class="form-group">
+                                <label>服务评价：</label>
+                                <select name="rating" required>
+                                    <option value="5">5星 (非常满意)</option>
+                                    <option value="4">4星 (满意)</option>
+                                    <option value="3">3星 (一般)</option>
+                                    <option value="2">2星 (不满意)</option>
+                                    <option value="1">1星 (非常不满意)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <textarea name="feedback" placeholder="写下您的评价内容..." rows="2"></textarea>
+                            </div>
+                            <button type="submit" class="btn-primary">提交评价</button>
                         </form>
                     </div>
-                    <div th:if="${req.rating != null}" style="margin-top: 15px; font-size: 0.9rem; color: #48bb78;">
-                        <strong>我的评分：</strong> <span th:text="${'⭐'.repeat(req.rating)}"></span>
-                        <div style="font-style: italic; color: #718096; margin-top: 5px;" th:text="'“' + ${req.residentFeedback} + '”'"></div>
+                    <div th:if="${req.rating != null}" style="margin-top: 10px; font-size: 14px; color: #28a745;">
+                        <strong>我的评分：</strong> <span th:text="${req.rating} + ' 星'"></span>
+                        <div style="color: #666; margin-top: 5px;" th:text="'“' + ${req.residentFeedback} + '”'"></div>
                     </div>
                 </div>
             </div>

@@ -110,12 +110,19 @@ th {
 }
 
 /* 表单与按钮 */
-input[type="text"], input[type="password"], input[type="number"], select, textarea {
-    padding: 6px;
+input[type="text"], input[type="password"], input[type="number"], input[type="tel"], select, textarea {
+    width: 100%;
+    padding: 8px;
     border: 1px solid var(--border-color);
     background-color: #fff;
     font-size: 14px;
     box-sizing: border-box;
+    border-radius: 0px;
+    outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: var(--secondary-color);
 }
 
 .btn {

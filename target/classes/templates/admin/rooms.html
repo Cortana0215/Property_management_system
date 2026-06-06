@@ -25,38 +25,38 @@
     </div>
 
     <div class="content">
-        <h1>房屋信息管理 <span th:if="${selectedBuilding}" style="color: var(--text-muted); font-size: 1.2rem;" th:text="' / ' + ${selectedBuilding.name}"></span></h1>
+        <h1>房屋信息管理 <span th:if="${selectedBuilding}" th:text="' / ' + ${selectedBuilding.name}"></span></h1>
 
         <div class="card">
             <div class="card-title">新增房屋</div>
-            <form th:action="@{/admin/rooms/add}" method="post" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; align-items: flex-end;">
-                <div>
+            <form th:action="@{/admin/rooms/add}" method="post">
+                <div class="form-group">
                     <label>所属楼栋</label>
                     <select name="buildingId" required>
                         <option value="">请选择...</option>
                         <option th:each="b : ${buildings}" th:value="${b.id}" th:text="${b.name}" th:selected="${selectedBuilding != null && b.id == selectedBuilding.id}"></option>
                     </select>
                 </div>
-                <div>
+                <div class="form-group">
                     <label>单元</label>
                     <input type="text" name="unitNumber" placeholder="如：1单元" required>
                 </div>
-                <div>
+                <div class="form-group">
                     <label>房号</label>
                     <input type="text" name="roomNumber" placeholder="如：101" required>
                 </div>
-                <div>
+                <div class="form-group">
                     <label>建筑面积 (㎡)</label>
                     <input type="number" step="0.01" name="area" placeholder="0.00" required>
                 </div>
-                <button type="submit" class="btn btn-primary" style="height: 48px;">保存房屋</button>
+                <button type="submit" class="btn btn-primary">保存房屋</button>
             </form>
         </div>
 
         <div class="card">
             <div class="card-title">
                 数据列表
-                <select onchange="location.href='/admin/rooms?buildingId=' + this.value" style="width: auto; padding: 5px 15px; font-size: 0.85rem;">
+                <select onchange="location.href='/admin/rooms?buildingId=' + this.value">
                     <option value="">所有楼栋</option>
                     <option th:each="b : ${buildings}" th:value="${b.id}" th:text="${b.name}" th:selected="${selectedBuilding != null && b.id == selectedBuilding.id}"></option>
                 </select>
@@ -80,15 +80,15 @@
                         <td><strong th:text="${r.unitNumber} + ' - ' + ${r.roomNumber}"></strong></td>
                         <td th:text="${r.area} + ' ㎡'"></td>
                         <td>
-                            <span th:if="${r.status == 'VACANT'}" style="color: var(--success); font-weight: 700;">● 空置</span>
-                            <span th:if="${r.status == 'OCCUPIED'}" style="color: var(--secondary-color); font-weight: 700;">● 已入住</span>
+                            <span th:if="${r.status == 'VACANT'}" class="status-pending">空置</span>
+                            <span th:if="${r.status == 'OCCUPIED'}" class="status-completed">已入住</span>
                         </td>
                         <td>
-                            <span th:each="res : ${r.residents}" class="btn" style="background: #f1f5f9; color: #475569; font-size: 0.75rem; margin-right: 5px; padding: 2px 8px;" th:text="${res.name}"></span>
+                            <span th:each="res : ${r.residents}" class="btn" th:text="${res.name}"></span>
                         </td>
                         <td>
                             <form th:action="@{/admin/rooms/delete/{id}(id=${r.id})}" method="post">
-                                <button type="submit" class="btn btn-danger" style="padding: 4px 10px; font-size: 0.75rem;">删除</button>
+                                <button type="submit" class="btn btn-danger">删除</button>
                             </form>
                         </td>
                     </tr>
