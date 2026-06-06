@@ -30,7 +30,7 @@
         
         <div class="card">
             <div class="card-title">新住户开户</div>
-            <form th:action="@{/admin/residents/add}" method="post">
+            <form th:action="@{/admin/residents/add}" method="post" class="form-row">
                 <div class="form-group">
                     <label>姓名</label>
                     <input type="text" name="name" placeholder="请输入姓名" required>
@@ -51,7 +51,7 @@
                     <label>初始密码</label>
                     <input type="password" name="password" placeholder="请输入密码" required>
                 </div>
-                <button type="submit" class="btn btn-primary">立即开户</button>
+                <button type="submit" class="btn btn-primary" style="height: 34px;">立即开户</button>
             </form>
         </div>
 

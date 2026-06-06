@@ -18,6 +18,7 @@
             <a th:href="@{/admin/staff}">职工管理</a>
             <a th:href="@{/admin/notices}" class="active">公告管理</a>
             <a th:href="@{/admin/complaints}">投诉管理</a>
+            <a th:href="@{/admin/admins}">管理员账号</a>
             <a th:href="@{/admin/repairs}">报修任务</a>
             <a th:href="@{/logout}" style="margin-top: 40px; color: #f56565;">退出系统</a>
         </div>
@@ -29,17 +30,19 @@
         <div class="card">
             <div class="card-title">发布新公告</div>
             <form th:action="@{/admin/notices/add}" method="post">
-                <div class="form-group">
-                    <label>公告标题</label>
-                    <input type="text" name="title" required placeholder="输入公告标题">
-                </div>
-                <div class="form-group">
-                    <label>发布对象</label>
-                    <select name="targetRole" required>
-                        <option value="ALL">全体人员</option>
-                        <option value="RESIDENT">仅住户</option>
-                        <option value="STAFF">仅职工</option>
-                    </select>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>公告标题</label>
+                        <input type="text" name="title" required placeholder="输入公告标题">
+                    </div>
+                    <div class="form-group">
+                        <label>发布对象</label>
+                        <select name="targetRole" required>
+                            <option value="ALL">全体人员</option>
+                            <option value="RESIDENT">仅住户</option>
+                            <option value="STAFF">仅职工</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>公告内容</label>

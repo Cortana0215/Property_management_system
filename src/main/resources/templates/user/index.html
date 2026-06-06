@@ -35,10 +35,6 @@
                 <h3>设施报修</h3>
                 <p>快速上报故障</p>
             </a>
-            <a th:href="@{/notices}" class="action-tile">
-                <h3>社区公告</h3>
-                <p>最新小区动态</p>
-            </a>
             <a th:href="@{/complaints}" class="action-tile">
                 <h3>投诉建议</h3>
                 <p>您的声音让我们进步</p>
@@ -47,6 +43,18 @@
                 <h3>便民服务</h3>
                 <p>常用电话</p>
             </a>
+        </div>
+
+        <!-- 社区公告展示区 -->
+        <div class="notice-list" style="margin-bottom: 30px;" th:if="${notices != null && !#lists.isEmpty(notices)}">
+            <h3 style="border-bottom: 2px solid #ccc; padding-bottom: 10px;">最新社区公告</h3>
+            <div th:each="n : ${notices}" style="background: white; border: 1px solid #ccc; padding: 15px; margin-bottom: 15px;">
+                <h4 style="margin: 0 0 10px 0; color: #0056b3;" th:text="${n.title}"></h4>
+                <div style="font-size: 12px; color: #666; margin-bottom: 10px;">
+                    发布时间：<span th:if="${n.createTime != null}" th:text="${#temporals.format(n.createTime, 'yyyy-MM-dd HH:mm')}"></span><span th:unless="${n.createTime != null}">-</span>
+                </div>
+                <div style="font-size: 14px; white-space: pre-wrap;" th:text="${n.content}"></div>
+            </div>
         </div>
 
         <!-- 报修记录 -->

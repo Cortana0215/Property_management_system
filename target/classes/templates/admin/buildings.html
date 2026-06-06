@@ -29,7 +29,7 @@
 
         <div class="card">
             <div class="card-title">添加新楼栋</div>
-            <form th:action="@{/admin/buildings/add}" method="post">
+            <form th:action="@{/admin/buildings/add}" method="post" class="form-row">
                 <div class="form-group">
                     <label>楼栋名称</label>
                     <input type="text" name="name" required placeholder="如：1号楼">
@@ -38,7 +38,7 @@
                     <label>描述备注</label>
                     <input type="text" name="description" placeholder="如：近小区东门，共18层">
                 </div>
-                <button type="submit" class="btn btn-primary">立即添加</button>
+                <button type="submit" class="btn btn-primary" style="height: 34px;">立即添加</button>
             </form>
         </div>
 

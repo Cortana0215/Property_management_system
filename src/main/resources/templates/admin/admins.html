@@ -29,7 +29,7 @@
 
         <div class="card">
             <div class="card-title">新增系统管理员</div>
-            <form th:action="@{/admin/admins/add}" method="post">
+            <form th:action="@{/admin/admins/add}" method="post" class="form-row">
                 <div class="form-group">
                     <label>登录用户名</label>
                     <input type="text" name="username" required>
@@ -38,7 +38,7 @@
                     <label>登录密码</label>
                     <input type="password" name="password" required>
                 </div>
-                <button type="submit" class="btn btn-primary">创建管理员</button>
+                <button type="submit" class="btn btn-primary" style="height: 34px;">创建管理员</button>
             </form>
         </div>
 

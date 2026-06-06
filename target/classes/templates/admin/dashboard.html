@@ -47,6 +47,16 @@
             <p>欢迎回来，管理员 <strong><span th:text="${session.loggedInAdmin.username}">admin</span></strong>。</p>
             <p style="color: var(--text-muted); font-size: 14px;">当前系统运行正常，所有模块已就绪。您可以通过左侧菜单管理小区资产、住户及报修任务。</p>
         </div>
+
+        <div class="card">
+            <div class="card-title">快捷入口</div>
+            <div class="stats-grid">
+                <a th:href="@{/admin/notices}" class="btn btn-primary" style="flex: 1; text-align: center; padding: 15px;">发布新公告</a>
+                <a th:href="@{/admin/residents}" class="btn btn-primary" style="flex: 1; text-align: center; padding: 15px;">住户开户</a>
+                <a th:href="@{/admin/rooms}" class="btn btn-primary" style="flex: 1; text-align: center; padding: 15px;">新增房屋档案</a>
+                <a th:href="@{/admin/staff}" class="btn btn-primary" style="flex: 1; text-align: center; padding: 15px;">录入职工</a>
+            </div>
+        </div>
     </div>
 </body>
 </html>

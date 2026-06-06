@@ -45,12 +45,13 @@ public class UserController {
     public String index(HttpSession session, Model model) {
         Resident sessionResident = (Resident) session.getAttribute("loggedInUser");
         if (sessionResident != null) {
-            // Re-fetch to get latest data including rooms
             Resident resident = residentRepository.findById(sessionResident.getId()).orElse(sessionResident);
             model.addAttribute("myRequests", repairRequestRepository.findAll().stream()
                     .filter(r -> resident.getName().equals(r.getSubmitterName()))
                     .collect(Collectors.toList()));
             model.addAttribute("myRooms", resident.getRooms());
+            // Fetch notices directly for the dashboard
+            model.addAttribute("notices", noticeRepository.findByTargetRoleInOrderByCreateTimeDesc(java.util.Arrays.asList("ALL", "RESIDENT")));
         }
         return "user/index";
     }

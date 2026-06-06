@@ -29,7 +29,7 @@
         
         <div class="card">
             <div class="card-title">添加新职工</div>
-            <form th:action="@{/admin/staff/add}" method="post">
+            <form th:action="@{/admin/staff/add}" method="post" class="form-row">
                 <div class="form-group">
                     <label>姓名</label>
                     <input type="text" name="name" placeholder="请输入姓名" required>
@@ -46,7 +46,7 @@
                     <label>登录密码</label>
                     <input type="password" name="password" placeholder="请输入密码" required>
                 </div>
-                <button type="submit" class="btn btn-primary">立即录入职工信息</button>
+                <button type="submit" class="btn btn-primary" style="height: 34px;">立即录入职工信息</button>
             </form>
         </div>
 

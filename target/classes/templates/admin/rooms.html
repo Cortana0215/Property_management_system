@@ -29,7 +29,7 @@
 
         <div class="card">
             <div class="card-title">新增房屋</div>
-            <form th:action="@{/admin/rooms/add}" method="post">
+            <form th:action="@{/admin/rooms/add}" method="post" class="form-row">
                 <div class="form-group">
                     <label>所属楼栋</label>
                     <select name="buildingId" required>
@@ -49,7 +49,7 @@
                     <label>建筑面积 (㎡)</label>
                     <input type="number" step="0.01" name="area" placeholder="0.00" required>
                 </div>
-                <button type="submit" class="btn btn-primary">保存房屋</button>
+                <button type="submit" class="btn btn-primary" style="height: 34px;">保存房屋</button>
             </form>
         </div>
 

@@ -30,17 +30,19 @@
         <div class="card">
             <div class="card-title">发布新公告</div>
             <form th:action="@{/admin/notices/add}" method="post">
-                <div class="form-group">
-                    <label>公告标题</label>
-                    <input type="text" name="title" required placeholder="输入公告标题">
-                </div>
-                <div class="form-group">
-                    <label>发布对象</label>
-                    <select name="targetRole" required>
-                        <option value="ALL">全体人员</option>
-                        <option value="RESIDENT">仅住户</option>
-                        <option value="STAFF">仅职工</option>
-                    </select>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>公告标题</label>
+                        <input type="text" name="title" required placeholder="输入公告标题">
+                    </div>
+                    <div class="form-group">
+                        <label>发布对象</label>
+                        <select name="targetRole" required>
+                            <option value="ALL">全体人员</option>
+                            <option value="RESIDENT">仅住户</option>
+                            <option value="STAFF">仅职工</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>公告内容</label>
