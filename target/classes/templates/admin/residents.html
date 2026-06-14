@@ -58,6 +58,14 @@
         <div class="card">
             <div class="card-title">住户名册</div>
             <table>
+                <colgroup>
+                    <col style="width: 12%;">
+                    <col style="width: 15%;">
+                    <col style="width: 25%;">
+                    <col style="width: 15%;">
+                    <col style="width: 20%;">
+                    <col style="width: 13%;">
+                </colgroup>
                 <thead>
                     <tr>
                         <th>姓名</th>
@@ -73,25 +81,30 @@
                         <td><strong th:text="${resident.name}"></strong></td>
                         <td th:text="${resident.phone}"></td>
                         <td>
-                            <div th:each="room : ${resident.rooms}" style="margin-bottom: 5px;">
+                            <div th:each="room : ${resident.rooms}" style="margin-bottom: 5px; display: flex; align-items: center; gap: 8px;">
                                 <span class="btn" th:text="${room.building.name} + ' ' + ${room.unitNumber} + ' - ' + ${room.roomNumber}"></span>
+                                <form th:action="@{/admin/residents/unbind}" method="post" style="margin: 0;">
+                                    <input type="hidden" name="residentId" th:value="${resident.id}">
+                                    <input type="hidden" name="roomId" th:value="${room.id}">
+                                    <button type="submit" class="btn btn-danger" style="padding: 4px 8px; font-size: 12px; height: auto; min-height: auto; margin-left: 0;">解绑</button>
+                                </form>
                             </div>
                             <span th:if="${#lists.isEmpty(resident.rooms)}">未绑定</span>
                         </td>
                         <td th:text="${resident.username}"></td>
                         <td>
-                            <form th:action="@{/admin/residents/bind}" method="post">
+                            <form th:action="@{/admin/residents/bind}" method="post" style="display: flex; gap: 8px; align-items: center; margin: 0;">
                                 <input type="hidden" name="residentId" th:value="${resident.id}">
-                                <select name="roomId" required>
+                                <select name="roomId" required style="width: auto; flex: 1;">
                                     <option value="">选择空房...</option>
                                     <option th:each="r : ${vacantRooms}" th:value="${r.id}" th:text="${r.building.name} + ' ' + ${r.roomNumber}"></option>
                                 </select>
-                                <button type="submit" class="btn btn-success">绑定</button>
+                                <button type="submit" class="btn btn-success" style="white-space: nowrap; margin-left: 0;">绑定</button>
                             </form>
                         </td>
                         <td>
-                            <form th:action="@{/admin/residents/delete/{id}(id=${resident.id})}" method="post">
-                                <button type="submit" class="btn btn-danger" onclick="return confirm('确定注销该住户账号吗？')">注销</button>
+                            <form th:action="@{/admin/residents/delete/{id}(id=${resident.id})}" method="post" style="margin: 0;">
+                                <button type="submit" class="btn btn-danger" style="margin-left: 0; white-space: nowrap;" onclick="return confirm('确定注销该住户账号吗？')">注销</button>
                             </form>
                         </td>
                     </tr>

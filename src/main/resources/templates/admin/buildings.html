@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>楼栋管理 - 物业管理系统</title>
-    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css?v=2}">
 </head>
 <body>
     <div class="sidebar">
@@ -45,6 +45,13 @@
         <div class="card">
             <div class="card-title">楼栋列表</div>
             <table>
+                <colgroup>
+                    <col style="width: 10%;">
+                    <col style="width: 20%;">
+                    <col style="width: 35%;">
+                    <col style="width: 15%;">
+                    <col style="width: 20%;">
+                </colgroup>
                 <thead>
                     <tr>
                         <th>ID</th>

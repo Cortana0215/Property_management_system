@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>物业管理后台 - 管理员管理</title>
-    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css?v=2}">
 </head>
 <body>
     <div class="sidebar">
@@ -45,6 +45,11 @@
         <div class="card">
             <div class="card-title">系统管理员列表</div>
             <table>
+                <colgroup>
+                    <col style="width: 20%;">
+                    <col style="width: 50%;">
+                    <col style="width: 30%;">
+                </colgroup>
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -58,7 +63,7 @@
                         <td><strong th:text="${admin.username}"></strong></td>
                         <td>
                             <span th:if="${admin.username == 'admin'}" style="color: #999;">系统预设</span>
-                            <form th:unless="${admin.username == 'admin'}" th:action="@{/admin/admins/delete/{id}(id=${admin.id})}" method="post" style="display:inline;">
+                            <form th:unless="${admin.username == 'admin'}" th:action="@{/admin/admins/delete/{id}(id=${admin.id})}" method="post">
                                 <button type="submit" class="btn btn-danger" onclick="return confirm('确定要删除吗？')">删除</button>
                             </form>
                         </td>

@@ -6,22 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/user.css}">
     <style>
-        .info-group {
-            margin-bottom: 15px;
-            padding: 10px;
-            background: #e9ecef;
-            border: 1px solid #ccc;
-        }
-        .info-group label {
-            display: block;
-            color: #666;
-            font-size: 12px;
-            margin-bottom: 5px;
-        }
-        .info-group div {
-            font-size: 16px;
-            font-weight: bold;
-        }
     </style>
 </head>
 <body>
@@ -45,16 +29,16 @@
                     <input type="tel" name="phone" th:value="${resident.phone}" required>
                 </div>
 
-                <div class="info-group">
+                <div class="form-group">
                     <label>登录账号 (不可更改)</label>
-                    <div th:text="${resident.username}">username</div>
+                    <div class="form-control-static" th:text="${resident.username}">username</div>
                 </div>
 
-                <div class="info-group">
+                <div class="form-group">
                     <label>已绑定房产</label>
-                    <div style="margin-top: 5px;">
+                    <div class="form-control-static">
                         <span th:each="room : ${resident.rooms}" class="room-badge" 
-                              th:text="${room.building.name} + ' ' + ${room.unitNumber} + ' ' + ${room.roomNumber}"></span>
+                              th:text="${room.building.name} + ' ' + ${room.unitNumber} + ' ' + ${room.roomNumber}" style="margin-right: 5px;"></span>
                         <span th:if="${#lists.isEmpty(resident.rooms)}" style="color: #666; font-size: 12px;">暂未绑定正式房产</span>
                     </div>
                 </div>
@@ -64,8 +48,8 @@
                     <input type="password" name="password" placeholder="如需修改请输入新密码，否则请留空">
                 </div>
                 
-                <div style="margin-top: 20px;">
-                    <button type="submit" class="btn-primary" style="width: 100%;">确认保存修改</button>
+                <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
+                    <button type="submit" class="btn-primary" style="width: 150px;">确认保存修改</button>
                 </div>
             </form>
         </div>

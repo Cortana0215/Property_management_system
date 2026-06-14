@@ -70,12 +70,27 @@ public class AdminController {
     }
 
     @PostMapping("/residents/bind")
+    @org.springframework.transaction.annotation.Transactional
     public String bindResidentRoom(@RequestParam Long residentId, @RequestParam Long roomId) {
         Resident resident = residentRepository.findById(residentId).orElse(null);
         Room room = roomRepository.findById(roomId).orElse(null);
         if (resident != null && room != null) {
             resident.addRoom(room);
             room.setStatus("OCCUPIED");
+            residentRepository.save(resident);
+            roomRepository.save(room);
+        }
+        return "redirect:/admin/residents";
+    }
+
+    @PostMapping("/residents/unbind")
+    @org.springframework.transaction.annotation.Transactional
+    public String unbindResidentRoom(@RequestParam Long residentId, @RequestParam Long roomId) {
+        Resident resident = residentRepository.findById(residentId).orElse(null);
+        Room room = roomRepository.findById(roomId).orElse(null);
+        if (resident != null && room != null) {
+            resident.removeRoom(room);
+            room.setStatus("VACANT");
             residentRepository.save(resident);
             roomRepository.save(room);
         }

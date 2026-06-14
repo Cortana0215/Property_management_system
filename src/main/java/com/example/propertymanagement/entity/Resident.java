@@ -61,4 +61,9 @@ public class Resident {
         this.rooms.add(room);
         room.getResidents().add(this);
     }
+
+    public void removeRoom(Room room) {
+        this.rooms.remove(room);
+        room.getResidents().remove(this);
+    }
 }
