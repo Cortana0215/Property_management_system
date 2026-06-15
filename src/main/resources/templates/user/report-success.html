@@ -4,15 +4,26 @@
     <meta charset="UTF-8">
     <title>报修成功</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/css/user.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css?v=3}">
 </head>
 <body>
-    <div class="navbar">
-        <h1>提交成功</h1>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>智慧物业 - 住户端</h2>
+        </div>
+        <div class="sidebar-menu">
+            <a th:href="@{/}">服务大厅</a>
+            <a th:href="@{/profile}">个人资料</a>
+            <a th:href="@{/report}">设施报修</a>
+            <a th:href="@{/complaints}">投诉建议</a>
+            <a th:href="@{/notices}">社区公告</a>
+            <a th:href="@{/services}">便民服务</a>
+            <a th:href="@{/logout}" style="margin-top: 40px; color: #f56565;">退出登录</a>
+        </div>
     </div>
-    
-    <div class="container">
-        <div class="form-container-centered" style="text-align: center;">
+    <div class="content">
+
+        <div class="card" style="text-align: center;">
             <h2 style="color: #28a745;">提交成功</h2>
             <p th:text="${message}"></p>
             <a th:href="@{/}" class="btn-primary" style="margin-top: 20px;">返回首页</a>

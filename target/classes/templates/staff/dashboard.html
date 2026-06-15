@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>物业职工端 - 我的任务</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/css/user.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css?v=3}">
     <style>
         .staff-header {
             background-color: #1a252f;
@@ -15,24 +15,51 @@
     </style>
 </head>
 <body>
-    <header class="staff-header">
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-            <h1>物业职工端</h1>
-            <div>
-                <a th:href="@{/staff/notices}" style="color: #ecf0f1; text-decoration: none; margin-right: 20px; font-weight: 600;">内部公告</a>
-                <span th:text="${session.loggedInStaff.name}">职工</span> | 
-                <a th:href="@{/logout}" style="color: #ecf0f1; text-decoration: none;">退出</a>
+    
+    
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>智慧物业 - 职工端</h2>
+        </div>
+        <div class="sidebar-menu">
+            <a th:href="@{/staff/dashboard}" class="active">我的任务</a>
+            <a th:href="@{/attendance/records}">我的考勤</a>
+            <a th:href="@{/staff/notices}">内部公告</a>
+            <a th:href="@{/logout}" style="margin-top: 40px; color: #f56565;">退出登录</a>
+        </div>
+    </div>
+    <div class="content">
+
+
+        <div th:if="${message}" class="alert alert-success" th:text="${message}" style="background: #c6f6d5; color: #22543d; padding: 10px; border-radius: 4px; margin-bottom: 20px;"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}" style="background: #fed7d7; color: #822727; padding: 10px; border-radius: 4px; margin-bottom: 20px;"></div>
+
+        <div class="card">
+            <div class="card-title">考勤打卡</div>
+            <div th:if="${activeAttendance == null}">
+                <p>您目前处于 <strong>离岗</strong> 状态。</p>
+                <form th:action="@{/attendance/clock-in}" method="post" style="margin-left: 0;">
+                    <button type="submit" class="btn btn-primary attendance-btn">打卡上班</button>
+                </form>
+            </div>
+            <div th:if="${activeAttendance != null}">
+                <p>您目前处于 <strong>在岗</strong> 状态。</p>
+                <p>上班时间：<span th:text="${#temporals.format(activeAttendance.clockInTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                   <span th:class="${activeAttendance.clockInStatus == '迟到' ? 'status-tag status-pending' : 'status-tag status-completed'}" 
+                         th:text="${activeAttendance.clockInStatus}"></span>
+                </p>
+                <form th:action="@{/attendance/clock-out}" method="post" style="margin-left: 0;">
+                    <button type="submit" class="btn btn-primary attendance-btn" style="background: linear-gradient(135deg, #718096 0%, #4A5568 100%);">打卡下班</button>
+                </form>
             </div>
         </div>
-    </header>
 
-    <div class="container">
         <h2>待处理任务</h2>
         <div th:if="${#lists.isEmpty(myTasks)}" style="color: #666;">
             目前没有指派给您的新任务。
         </div>
         
-        <div th:each="task : ${myTasks}" class="request-card">
+        <div th:each="task : ${myTasks}" class="card">
             <div class="status-tag status-assigned">待处理</div>
             <h3 th:text="${task.facilityDescription}">报修项</h3>
             <p><strong>报修人:</strong> <span th:text="${task.submitterName}"></span> (<span th:text="${task.contactPhone}"></span>)</p>
@@ -58,7 +85,7 @@
         </div>
 
         <h2 style="margin-top: 40px;">已完成任务</h2>
-        <div th:each="task : ${completedTasks}" class="request-card" style="opacity: 0.8;">
+        <div th:each="task : ${completedTasks}" class="card" style="opacity: 0.8;">
             <div class="status-tag status-completed">已完成</div>
             <h3 th:text="${task.facilityDescription}">报修项</h3>
             <p><strong>完成时间:</strong> <span th:text="${#temporals.format(task.completeTime, 'yyyy-MM-dd HH:mm')}"></span></p>

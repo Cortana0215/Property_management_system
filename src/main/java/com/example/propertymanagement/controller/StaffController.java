@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -29,12 +30,18 @@ public class StaffController {
     @Autowired
     private NoticeRepository noticeRepository;
 
+    @Autowired
+    private com.example.propertymanagement.repository.AttendanceRepository attendanceRepository;
+
     private final String UPLOAD_DIR = "uploads/";
 
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {
         Staff staff = (Staff) session.getAttribute("loggedInStaff");
         if (staff == null) return "redirect:/login";
+
+        Optional<com.example.propertymanagement.entity.AttendanceRecord> activeRecord = attendanceRepository.findTopByUserIdAndUserRoleAndClockOutTimeIsNullOrderByClockInTimeDesc(staff.getId(), "STAFF");
+        model.addAttribute("activeAttendance", activeRecord.orElse(null));
 
         model.addAttribute("myTasks", repairRequestRepository.findAll().stream()
                 .filter(r -> staff.getId().equals(r.getAssignedStaffId()) && !"COMPLETED".equals(r.getStatus()))

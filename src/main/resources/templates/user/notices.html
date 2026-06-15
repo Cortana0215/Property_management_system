@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>社区公告 - 智慧物业</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/css/user.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css?v=3}">
     <style>
         .notice-card {
             background: white;
@@ -33,12 +33,22 @@
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <h1>社区公告</h1>
-        <a th:href="@{/}" style="color: white; text-decoration: none;">返回首页</a>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>智慧物业 - 住户端</h2>
+        </div>
+        <div class="sidebar-menu">
+            <a th:href="@{/}">服务大厅</a>
+            <a th:href="@{/profile}">个人资料</a>
+            <a th:href="@{/report}">设施报修</a>
+            <a th:href="@{/complaints}">投诉建议</a>
+            <a th:href="@{/notices}">社区公告</a>
+            <a th:href="@{/services}">便民服务</a>
+            <a th:href="@{/logout}" style="margin-top: 40px; color: #f56565;">退出登录</a>
+        </div>
     </div>
-    
-    <div class="container">
+    <div class="content">
+
         <div th:if="${#lists.isEmpty(notices)}" style="border: 1px solid #ccc; padding: 20px; text-align: center; color: #666;">
             目前没有新的公告通知
         </div>

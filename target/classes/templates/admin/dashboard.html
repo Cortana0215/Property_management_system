@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>管理后台 - 仪表盘</title>
-    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css?v=2}">
 </head>
 <body>
+    
+    
     <div class="sidebar">
         <div class="sidebar-header">
             <h2>物业管理系统</h2>
@@ -20,11 +22,16 @@
             <a th:href="@{/admin/complaints}">投诉管理</a>
             <a th:href="@{/admin/admins}">管理员账号</a>
             <a th:href="@{/admin/repairs}">报修任务</a>
+            <a th:href="@{/attendance/records}">考勤管理</a>
             <a th:href="@{/logout}" style="margin-top: 40px; color: #f56565;">退出系统</a>
         </div>
     </div>
-
     <div class="content">
+
+
+        <div th:if="${message}" class="alert alert-success" th:text="${message}" style="background: #c6f6d5; color: #22543d; padding: 10px; border-radius: 4px; margin-bottom: 20px;"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}" style="background: #fed7d7; color: #822727; padding: 10px; border-radius: 4px; margin-bottom: 20px;"></div>
+
         <h1>仪表盘概览</h1>
         
         <div class="stats-grid">
@@ -39,6 +46,26 @@
             <div class="stat-item">
                 <div class="stat-label">待处理报修</div>
                 <div class="stat-value" th:text="${pendingRepairs}">0</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">今日考勤</div>
+            <div th:if="${activeAttendance == null}">
+                <p>您当前处于 <strong>离岗</strong> 状态。</p>
+                <form th:action="@{/attendance/clock-in}" method="post" style="margin-left: 0;">
+                    <button type="submit" class="btn btn-primary attendance-btn">打卡上班</button>
+                </form>
+            </div>
+            <div th:if="${activeAttendance != null}">
+                <p>您当前处于 <strong>在岗</strong> 状态。</p>
+                <p>上班打卡时间：<span th:text="${#temporals.format(activeAttendance.clockInTime, 'yyyy-MM-dd HH:mm:ss')}"></span> 
+                   <span th:class="${activeAttendance.clockInStatus == '迟到' ? 'status-tag status-pending' : 'status-tag status-completed'}" 
+                         th:text="${activeAttendance.clockInStatus}"></span>
+                </p>
+                <form th:action="@{/attendance/clock-out}" method="post" style="margin-left: 0;">
+                    <button type="submit" class="btn btn-primary attendance-btn" style="background: linear-gradient(135deg, #718096 0%, #4A5568 100%);">打卡下班</button>
+                </form>
             </div>
         </div>
 

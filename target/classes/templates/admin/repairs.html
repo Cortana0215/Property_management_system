@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>报修管理 - 物业管理系统</title>
-    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css?v=2}">
     <style>
         .image-preview {
             width: 80px;
@@ -15,6 +15,8 @@
     </style>
 </head>
 <body>
+    
+    
     <div class="sidebar">
         <div class="sidebar-header">
             <h2>物业管理系统</h2>
@@ -29,19 +31,22 @@
             <a th:href="@{/admin/complaints}">投诉管理</a>
             <a th:href="@{/admin/admins}">管理员账号</a>
             <a th:href="@{/admin/repairs}" class="active">报修任务</a>
+            <a th:href="@{/attendance/records}">考勤管理</a>
             <a th:href="@{/logout}" style="margin-top: 40px; color: #f56565;">退出系统</a>
         </div>
     </div>
-
     <div class="content">
+
+
         <h1>报修任务流转管理</h1>
 
         <div class="card">
             <div class="card-title">所有工单</div>
             <table>
                 <colgroup>
-                    <col style="width: 30%;">
-                    <col style="width: 15%;">
+                    <col style="width: 25%;">
+                    <col style="width: 10%;">
+                    <col style="width: 10%;">
                     <col style="width: 10%;">
                     <col style="width: 15%;">
                     <col style="width: 15%;">
@@ -53,6 +58,7 @@
                         <th>现场照片</th>
                         <th>当前状态</th>
                         <th>处理人员</th>
+                        <th>评价反馈</th>
                         <th>时间节点</th>
                         <th>操作</th>
                     </tr>
@@ -98,7 +104,7 @@
                                 <button class="btn" 
                                         th:data-feedback="${repair.staffFeedbackText}"
                                         onclick="showFeedback(this)">反馈</button>
-                                <form th:action="@{/admin/repairs/delete/{id}(id=${repair.id})}" method="post" style="display:inline-block;" onsubmit="return confirm('确定要删除吗？')">
+                                <form th:action="@{/admin/repairs/delete/{id}(id=${repair.id})}" method="post" onsubmit="return confirm('确定要删除吗？')">
                                     <button type="submit" class="btn btn-danger">删除</button>
                                 </form>
                             </div>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>考勤管理 - 物业管理系统</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css?v=2}">
+</head>
+<body>
+    
+    
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>物业管理系统</h2>
+        </div>
+        <div class="sidebar-menu">
+            <a th:href="@{/admin/dashboard}">仪表盘</a>
+            <a th:href="@{/admin/buildings}">楼栋管理</a>
+            <a th:href="@{/admin/rooms}">房屋管理</a>
+            <a th:href="@{/admin/residents}">住户管理</a>
+            <a th:href="@{/admin/staff}">职工管理</a>
+            <a th:href="@{/admin/notices}">公告管理</a>
+            <a th:href="@{/admin/complaints}">投诉管理</a>
+            <a th:href="@{/admin/admins}">管理员账号</a>
+            <a th:href="@{/admin/repairs}">报修任务</a>
+            <a th:href="@{/attendance/records}" class="active">考勤管理</a>
+            <a th:href="@{/logout}" style="margin-top: 40px; color: #f56565;">退出系统</a>
+        </div>
+    </div>
+    <div class="content">
+
+
+        <h1>考勤记录管理</h1>
+
+        <div class="card">
+            <div class="card-title">考勤报表</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>姓名</th>
+                        <th>角色</th>
+                        <th>上班打卡时间</th>
+                        <th>下班打卡时间</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="record : ${records}">
+                        <td th:text="${record.id}"></td>
+                        <td th:text="${record.userName}"></td>
+                        <td th:text="${record.userRole == 'ADMIN' ? '管理员' : '职工'}"></td>
+                        <td>
+                            <span th:text="${#temporals.format(record.clockInTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                            <span th:class="${record.clockInStatus == '迟到' ? 'status-tag status-pending' : 'status-tag status-completed'}" 
+                                  th:text="${record.clockInStatus}" style="font-size: 11px; padding: 2px 6px; margin-left: 5px;"></span>
+                        </td>
+                        <td>
+                            <div th:if="${record.clockOutTime != null}">
+                                <span th:text="${#temporals.format(record.clockOutTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                                <span th:class="${record.clockOutStatus == '早退' ? 'status-tag status-pending' : 'status-tag status-completed'}" 
+                                      th:text="${record.clockOutStatus}" style="font-size: 11px; padding: 2px 6px; margin-left: 5px; background-color: #FED7D7; color: #822727;"
+                                      th:styleappend="${record.clockOutStatus == '正常' ? 'background-color: #C6F6D5; color: #22543D;' : ''}"></span>
+                            </div>
+                            <span th:unless="${record.clockOutTime != null}">-</span>
+                        </td>
+                        <td>
+                            <span th:if="${record.clockOutTime != null}" class="status-tag status-completed">已结转</span>
+                            <span th:if="${record.clockOutTime == null}" class="status-tag status-assigned">在岗中</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

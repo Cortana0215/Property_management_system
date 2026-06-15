@@ -4,16 +4,26 @@
     <meta charset="UTF-8">
     <title>新建投诉建议 - 智慧物业</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/css/user.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css?v=3}">
 </head>
 <body>
-    <div class="navbar">
-        <h1>提交投诉或建议</h1>
-        <a th:href="@{/complaints}" style="color: white; text-decoration: none;">返回列表</a>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>智慧物业 - 住户端</h2>
+        </div>
+        <div class="sidebar-menu">
+            <a th:href="@{/}">服务大厅</a>
+            <a th:href="@{/profile}">个人资料</a>
+            <a th:href="@{/report}">设施报修</a>
+            <a th:href="@{/complaints}">投诉建议</a>
+            <a th:href="@{/notices}">社区公告</a>
+            <a th:href="@{/services}">便民服务</a>
+            <a th:href="@{/logout}" style="margin-top: 40px; color: #f56565;">退出登录</a>
+        </div>
     </div>
-    
-    <div class="container">
-        <div class="form-container-centered">
+    <div class="content">
+
+        <div class="card">
             <h2 style="margin-top: 0; border-bottom: 2px solid #0056b3; padding-bottom: 10px;">写下您的反馈</h2>
             
             <form th:action="@{/complaint/submit}" method="post">
@@ -27,9 +37,9 @@
                     <textarea name="content" rows="6" required placeholder="请详细描述您的问题或建议..."></textarea>
                 </div>
                 
-                <div style="margin-top: 20px;">
-                    <button type="submit" class="btn-primary" style="margin-right: 10px;">确认提交</button>
-                    <a th:href="@{/complaints}" class="btn-primary" style="background: #e9ecef; color: #333; border-color: #ccc;">取消</a>
+                <div style="margin-top: 30px;">
+                    <button type="submit" class="btn btn-primary" style="margin-left: 136px; padding: 12px 30px; margin-right: 15px;">确认提交反馈</button>
+                    <a th:href="@{/complaints}" class="btn">取消返回</a>
                 </div>
             </form>
         </div>

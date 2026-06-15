@@ -4,52 +4,65 @@
     <meta charset="UTF-8">
     <title>个人中心 - 智慧物业</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/css/user.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css?v=3}">
     <style>
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <h1>个人中心</h1>
-        <a th:href="@{/}" style="color: white; text-decoration: none;">返回首页</a>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>智慧物业 - 住户端</h2>
+        </div>
+        <div class="sidebar-menu">
+            <a th:href="@{/}">服务大厅</a>
+            <a th:href="@{/profile}">个人资料</a>
+            <a th:href="@{/report}">设施报修</a>
+            <a th:href="@{/complaints}">投诉建议</a>
+            <a th:href="@{/notices}">社区公告</a>
+            <a th:href="@{/services}">便民服务</a>
+            <a th:href="@{/logout}" style="margin-top: 40px; color: #f56565;">退出登录</a>
+        </div>
     </div>
-    
-    <div class="container">
-        <div class="form-container-centered">
-            <h2 style="margin-top: 0; border-bottom: 2px solid #0056b3; padding-bottom: 10px; margin-bottom: 20px;">账户资料管理</h2>
+    <div class="content">
+
+        <div class="card">
+            <h2 style="margin-top: 0; border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; margin-bottom: 30px;">账户资料管理</h2>
             
             <form th:action="@{/profile/update}" method="post">
                 <div class="form-group">
                     <label>住户姓名</label>
-                    <input type="text" name="name" th:value="${resident.name}" required>
+                    <input type="text" name="name" th:value="${resident.name}" placeholder="请输入姓名" required>
                 </div>
                 
                 <div class="form-group">
                     <label>联系电话</label>
-                    <input type="tel" name="phone" th:value="${resident.phone}" required>
+                    <input type="tel" name="phone" th:value="${resident.phone}" placeholder="请输入手机号" required>
                 </div>
 
                 <div class="form-group">
-                    <label>登录账号 (不可更改)</label>
-                    <div class="form-control-static" th:text="${resident.username}">username</div>
+                    <label>登录账号</label>
+                    <div style="position: relative; flex: 1; display: flex;">
+                        <input type="text" th:value="${resident.username}" readonly style="background-color: #F1F5F9; color: #64748B; cursor: not-allowed; padding-right: 80px;">
+                        <span style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 12px; color: #94a3b8; pointer-events: none;">不可更改</span>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label>已绑定房产</label>
+                    <label>绑定房产</label>
                     <div class="form-control-static">
-                        <span th:each="room : ${resident.rooms}" class="room-badge" 
-                              th:text="${room.building.name} + ' ' + ${room.unitNumber} + ' ' + ${room.roomNumber}" style="margin-right: 5px;"></span>
-                        <span th:if="${#lists.isEmpty(resident.rooms)}" style="color: #666; font-size: 12px;">暂未绑定正式房产</span>
+                        <span th:each="room : ${resident.rooms}" class="btn" 
+                              th:text="${room.building.name} + ' ' + ${room.unitNumber} + ' ' + ${room.roomNumber}" style="margin-right: 8px; cursor: default; background: #f8fafc; border-color: #e2e8f0; font-size: 13px;"></span>
+                        <span th:if="${#lists.isEmpty(resident.rooms)}" style="color: var(--danger); font-size: 14px;">暂未绑定房产，请联系管理员</span>
                     </div>
                 </div>
                 
-                <div class="form-group" style="margin-top: 30px; padding-top: 15px; border-top: 1px dashed #ccc;">
-                    <label>安全设置：修改密码</label>
+                <div class="form-group" style="margin-top: 40px; padding-top: 25px; border-top: 1px solid var(--border-color);">
+                    <label>修改密码</label>
                     <input type="password" name="password" placeholder="如需修改请输入新密码，否则请留空">
                 </div>
                 
-                <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
-                    <button type="submit" class="btn-primary" style="width: 150px;">确认保存修改</button>
+                <div style="margin-top: 30px;">
+                    <button type="submit" class="btn btn-primary" style="margin-left: 136px; padding: 10px 30px;">保存资料</button>
                 </div>
             </form>
         </div>

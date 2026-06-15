@@ -2,6 +2,7 @@ package com.example.propertymanagement.controller;
 
 import com.example.propertymanagement.entity.*;
 import com.example.propertymanagement.repository.*;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin")
@@ -38,8 +40,17 @@ public class AdminController {
     @Autowired
     private ComplaintRepository complaintRepository;
 
+    @Autowired
+    private AttendanceRepository attendanceRepository;
+
     @GetMapping("/dashboard")
-    public String dashboard(Model model) {
+    public String dashboard(HttpSession session, Model model) {
+        Admin admin = (Admin) session.getAttribute("loggedInAdmin");
+        if (admin != null) {
+            Optional<AttendanceRecord> activeRecord = attendanceRepository.findTopByUserIdAndUserRoleAndClockOutTimeIsNullOrderByClockInTimeDesc(admin.getId(), "ADMIN");
+            model.addAttribute("activeAttendance", activeRecord.orElse(null));
+        }
+        
         model.addAttribute("residentCount", residentRepository.count());
         model.addAttribute("staffCount", staffRepository.count());
         model.addAttribute("pendingRepairs", repairRequestRepository.findAll().stream().filter(r -> "PENDING".equals(r.getStatus())).count());

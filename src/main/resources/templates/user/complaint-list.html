@@ -4,24 +4,35 @@
     <meta charset="UTF-8">
     <title>投诉建议 - 智慧物业</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/css/user.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css?v=3}">
 </head>
 <body>
-    <div class="navbar">
-        <h1>我的投诉与建议</h1>
-        <a th:href="@{/}" style="color: white; text-decoration: none;">返回首页</a>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>智慧物业 - 住户端</h2>
+        </div>
+        <div class="sidebar-menu">
+            <a th:href="@{/}">服务大厅</a>
+            <a th:href="@{/profile}">个人资料</a>
+            <a th:href="@{/report}">设施报修</a>
+            <a th:href="@{/complaints}">投诉建议</a>
+            <a th:href="@{/notices}">社区公告</a>
+            <a th:href="@{/services}">便民服务</a>
+            <a th:href="@{/logout}" style="margin-top: 40px; color: #f56565;">退出登录</a>
+        </div>
     </div>
-    
-    <div class="container">
-        <div style="margin-bottom: 20px;">
-            <a th:href="@{/complaint/new}" class="btn-primary">新建投诉/建议</a>
+    <div class="content">
+        <h1>投诉与建议</h1>
+
+        <div style="margin-bottom: 30px;">
+            <a th:href="@{/complaint/new}" class="btn btn-primary" style="padding: 12px 24px; font-size: 15px;">+ 发起新投诉/建议</a>
         </div>
 
         <div th:if="${#lists.isEmpty(complaints)}" style="border: 1px solid #ccc; padding: 20px; text-align: center; color: #666;">
             暂无历史投诉与建议记录
         </div>
         
-        <div th:each="c : ${complaints}" class="request-card">
+        <div th:each="c : ${complaints}" class="card">
             <div th:class="'status-tag ' + ${c.status == 'RESOLVED' ? 'status-completed' : 'status-pending'}" 
                  th:text="${c.status == 'PENDING' ? '待处理' : (c.status == 'PROCESSING' ? '处理中' : '已解决')}"></div>
             

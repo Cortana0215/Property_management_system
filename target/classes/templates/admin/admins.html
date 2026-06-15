@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>物业管理后台 - 管理员管理</title>
-    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css?v=2}">
 </head>
 <body>
+    
+    
     <div class="sidebar">
         <div class="sidebar-header">
             <h2>物业管理系统</h2>
@@ -20,11 +22,13 @@
             <a th:href="@{/admin/complaints}">投诉管理</a>
             <a th:href="@{/admin/admins}" class="active">管理员账号</a>
             <a th:href="@{/admin/repairs}">报修任务</a>
+            <a th:href="@{/attendance/records}">考勤管理</a>
             <a th:href="@{/logout}" style="margin-top: 40px; color: #f56565;">退出系统</a>
         </div>
     </div>
-
     <div class="content">
+
+
         <h1>管理员账户管理</h1>
 
         <div class="card">
@@ -63,7 +67,7 @@
                         <td><strong th:text="${admin.username}"></strong></td>
                         <td>
                             <span th:if="${admin.username == 'admin'}" style="color: #999;">系统预设</span>
-                            <form th:unless="${admin.username == 'admin'}" th:action="@{/admin/admins/delete/{id}(id=${admin.id})}" method="post" style="display:inline;">
+                            <form th:unless="${admin.username == 'admin'}" th:action="@{/admin/admins/delete/{id}(id=${admin.id})}" method="post">
                                 <button type="submit" class="btn btn-danger" onclick="return confirm('确定要删除吗？')">删除</button>
                             </form>
                         </td>
