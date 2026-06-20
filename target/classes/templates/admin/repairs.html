@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>报修管理 - 物业管理系统</title>
-    <link rel="stylesheet" th:href="@{/css/admin.css?v=2}">
+    <link rel="stylesheet" th:href="@{/css/admin.css?v=6}">
     <style>
         .image-preview {
             width: 80px;
@@ -32,6 +32,7 @@
             <a th:href="@{/admin/admins}">管理员账号</a>
             <a th:href="@{/admin/repairs}" class="active">报修任务</a>
             <a th:href="@{/attendance/records}">考勤管理</a>
+            <a th:href="@{/admin/user-management}">用户账号管理</a>
             <a th:href="@{/logout}" style="margin-top: 40px; color: #f56565;">退出系统</a>
         </div>
     </div>
@@ -91,12 +92,10 @@
                         <td>
                             <div th:if="${repair.status == 'PENDING'}">
                                 <form th:action="@{/admin/repairs/assign/{id}(id=${repair.id})}" method="post">
-                                    <div class="form-group">
-                                        <select name="staffId" required>
-                                            <option value="">指派职工</option>
-                                            <option th:each="staff : ${staffList}" th:value="${staff.id}" th:text="${staff.name}"></option>
-                                        </select>
-                                    </div>
+                                    <select name="staffId" required>
+                                        <option value="">指派职工</option>
+                                        <option th:each="staff : ${staffList}" th:value="${staff.id}" th:text="${staff.name}"></option>
+                                    </select>
                                     <button type="submit" class="btn btn-primary">确认指派</button>
                                 </form>
                             </div>

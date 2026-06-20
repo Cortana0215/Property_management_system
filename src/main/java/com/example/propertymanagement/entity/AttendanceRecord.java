@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "attendance_record")
 public class AttendanceRecord {
 
     @Id
@@ -19,6 +20,12 @@ public class AttendanceRecord {
     private String clockInStatus; // "正常", "迟到"
     private String clockOutStatus; // "正常", "早退"
 
+    // 逻辑删除字段
+    private Boolean deleted = false;
+    private LocalDateTime deletedTime;
+    private Long deletedByAdminId;
+    private String deletedByAdminName;
+
     public AttendanceRecord() {}
 
     public AttendanceRecord(Long userId, String userName, String userRole, LocalDateTime clockInTime, String clockInStatus) {
@@ -27,6 +34,7 @@ public class AttendanceRecord {
         this.userRole = userRole;
         this.clockInTime = clockInTime;
         this.clockInStatus = clockInStatus;
+        this.deleted = false;
     }
 
     public Long getId() { return id; }
@@ -52,4 +60,16 @@ public class AttendanceRecord {
 
     public String getClockOutStatus() { return clockOutStatus; }
     public void setClockOutStatus(String clockOutStatus) { this.clockOutStatus = clockOutStatus; }
+
+    public Boolean getDeleted() { return deleted; }
+    public void setDeleted(Boolean deleted) { this.deleted = deleted; }
+
+    public LocalDateTime getDeletedTime() { return deletedTime; }
+    public void setDeletedTime(LocalDateTime deletedTime) { this.deletedTime = deletedTime; }
+
+    public Long getDeletedByAdminId() { return deletedByAdminId; }
+    public void setDeletedByAdminId(Long deletedByAdminId) { this.deletedByAdminId = deletedByAdminId; }
+
+    public String getDeletedByAdminName() { return deletedByAdminName; }
+    public void setDeletedByAdminName(String deletedByAdminName) { this.deletedByAdminName = deletedByAdminName; }
 }

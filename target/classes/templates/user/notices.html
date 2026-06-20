@@ -4,14 +4,8 @@
     <meta charset="UTF-8">
     <title>社区公告 - 智慧物业</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/css/admin.css?v=3}">
+    <link rel="stylesheet" th:href="@{/css/admin.css?v=6}">
     <style>
-        .notice-card {
-            background: white;
-            border: 1px solid var(--border-color);
-            padding: 20px;
-            margin-bottom: 15px;
-        }
         .notice-header {
             margin-bottom: 10px;
             border-bottom: 1px dashed #ccc;
@@ -49,7 +43,7 @@
     </div>
     <div class="content">
 
-        <div th:if="${#lists.isEmpty(notices)}" style="border: 1px solid #ccc; padding: 20px; text-align: center; color: #666;">
+        <div th:if="${#lists.isEmpty(notices)}" class="empty-state">
             目前没有新的公告通知
         </div>
         

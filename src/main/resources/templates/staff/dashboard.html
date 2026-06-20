@@ -4,15 +4,7 @@
     <meta charset="UTF-8">
     <title>物业职工端 - 我的任务</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/css/admin.css?v=3}">
-    <style>
-        .staff-header {
-            background-color: #1a252f;
-            color: white;
-            padding: 15px 30px;
-            margin-bottom: 30px;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/admin.css?v=6}">
 </head>
 <body>
     
@@ -31,25 +23,27 @@
     <div class="content">
 
 
-        <div th:if="${message}" class="alert alert-success" th:text="${message}" style="background: #c6f6d5; color: #22543d; padding: 10px; border-radius: 4px; margin-bottom: 20px;"></div>
-        <div th:if="${error}" class="alert alert-danger" th:text="${error}" style="background: #fed7d7; color: #822727; padding: 10px; border-radius: 4px; margin-bottom: 20px;"></div>
+        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <h1>我的工作任务</h1>
 
         <div class="card">
             <div class="card-title">考勤打卡</div>
-            <div th:if="${activeAttendance == null}" style="display: flex; align-items: center; justify-content: space-between;">
+            <div th:if="${activeAttendance == null}" class="attendance-status">
                 <span>您目前处于 <strong>离岗</strong> 状态。</span>
                 <form th:action="@{/attendance/clock-in}" method="post">
                     <button type="submit" class="btn btn-primary attendance-btn">打卡上班</button>
                 </form>
             </div>
-            <div th:if="${activeAttendance != null}">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+            <div th:if="${activeAttendance != null}" class="attendance-status">
+                <div class="attendance-info">
                     <span>您目前处于 <strong>在岗</strong> 状态。</span>
                     <form th:action="@{/attendance/clock-out}" method="post">
-                        <button type="submit" class="btn btn-primary attendance-btn" style="background: linear-gradient(135deg, #718096 0%, #4A5568 100%);">打卡下班</button>
+                        <button type="submit" class="btn btn-secondary attendance-btn">打卡下班</button>
                     </form>
                 </div>
-                <p>上班时间：<span th:text="${#temporals.format(activeAttendance.clockInTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                <p class="clock-time">上班时间：<span th:text="${#temporals.format(activeAttendance.clockInTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
                    <span th:class="${activeAttendance.clockInStatus == '迟到' ? 'status-tag status-pending' : 'status-tag status-completed'}" 
                          th:text="${activeAttendance.clockInStatus}"></span>
                 </p>
@@ -57,7 +51,7 @@
         </div>
 
         <h2>待处理任务</h2>
-        <div th:if="${#lists.isEmpty(myTasks)}" style="color: #666;">
+        <div th:if="${#lists.isEmpty(myTasks)}" class="empty-state">
             目前没有指派给您的新任务。
         </div>
         
@@ -66,12 +60,12 @@
             <h3 th:text="${task.facilityDescription}">报修项</h3>
             <p><strong>报修人:</strong> <span th:text="${task.submitterName}"></span> (<span th:text="${task.contactPhone}"></span>)</p>
             <p><strong>提交时间:</strong> <span th:text="${#temporals.format(task.submitTime, 'yyyy-MM-dd HH:mm')}"></span></p>
-            <div th:if="${task.imagePath}">
+            <div th:if="${task.imagePath}" class="task-image">
                 <p><strong>现场照片:</strong></p>
-                <img th:src="${task.imagePath}" style="max-width: 200px; border: 1px solid #ccc; cursor: pointer;" onclick="window.open(this.src)">
+                <img th:src="${task.imagePath}" class="image-preview" onclick="window.open(this.src)">
             </div>
             
-            <div style="margin-top: 15px; border-top: 1px solid #ccc; padding-top: 15px;">
+            <div class="task-feedback-section">
                 <h4>提交处理反馈</h4>
                 <form th:action="@{/staff/tasks/complete/{id}(id=${task.id})}" method="post" enctype="multipart/form-data">
                     <div class="form-group">
@@ -79,20 +73,22 @@
                     </div>
                     <div class="form-group">
                         <label>上传完成照片</label>
-                        <input type="file" name="image" accept="image/*" required style="border: none; padding: 0;">
+                        <input type="file" name="image" accept="image/*" required>
                     </div>
-                    <button type="submit" class="btn-primary">提交反馈并完结任务</button>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">提交反馈并完结任务</button>
+                    </div>
                 </form>
             </div>
         </div>
 
-        <h2 style="margin-top: 40px;">已完成任务</h2>
-        <div th:each="task : ${completedTasks}" class="card" style="opacity: 0.8;">
+        <h2>已完成任务</h2>
+        <div th:each="task : ${completedTasks}" class="card completed-task">
             <div class="status-tag status-completed">已完成</div>
             <h3 th:text="${task.facilityDescription}">报修项</h3>
             <p><strong>完成时间:</strong> <span th:text="${#temporals.format(task.completeTime, 'yyyy-MM-dd HH:mm')}"></span></p>
             <p><strong>您的反馈:</strong> <span th:text="${task.staffFeedbackText}"></span></p>
-            <img th:if="${task.staffFeedbackImage}" th:src="${task.staffFeedbackImage}" style="max-width: 150px; border: 1px solid #ccc;">
+            <img th:if="${task.staffFeedbackImage}" th:src="${task.staffFeedbackImage}" class="image-preview-sm">
         </div>
     </div>
 </body>

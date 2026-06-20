@@ -45,6 +45,9 @@ public class AdminController {
     private AttendanceRepository attendanceRepository;
 
     @Autowired
+    private PasswordChangeLogRepository passwordChangeLogRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @GetMapping("/dashboard")
@@ -288,5 +291,128 @@ public class AdminController {
         complaintRepository.deleteById(id);
         ra.addFlashAttribute("message", "记录已删除");
         return "redirect:/admin/complaints";
+    }
+
+    // --- User Management (Password Reset) ---
+    @GetMapping("/user-management")
+    public String userManagement(@RequestParam(required = false) String keyword, 
+                                 @RequestParam(required = false) String role,
+                                 HttpSession session, Model model) {
+        Admin admin = (Admin) session.getAttribute("loggedInAdmin");
+        if (admin == null) {
+            return "redirect:/login";
+        }
+        
+        model.addAttribute("passwordLogs", passwordChangeLogRepository.findAllByOrderByChangeTimeDesc());
+        
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            model.addAttribute("keyword", keyword);
+            model.addAttribute("role", role);
+            if ("RESIDENT".equals(role)) {
+                model.addAttribute("residents", residentRepository.findAll().stream()
+                    .filter(r -> (r.getUsername() != null && r.getUsername().contains(keyword)) 
+                              || (r.getName() != null && r.getName().contains(keyword))
+                              || String.valueOf(r.getId()).equals(keyword))
+                    .collect(java.util.stream.Collectors.toList()));
+            } else if ("STAFF".equals(role)) {
+                model.addAttribute("staffList", staffRepository.findAll().stream()
+                    .filter(s -> (s.getUsername() != null && s.getUsername().contains(keyword))
+                              || (s.getName() != null && s.getName().contains(keyword))
+                              || String.valueOf(s.getId()).equals(keyword))
+                    .collect(java.util.stream.Collectors.toList()));
+            } else {
+                model.addAttribute("residents", residentRepository.findAll().stream()
+                    .filter(r -> (r.getUsername() != null && r.getUsername().contains(keyword))
+                              || (r.getName() != null && r.getName().contains(keyword))
+                              || String.valueOf(r.getId()).equals(keyword))
+                    .collect(java.util.stream.Collectors.toList()));
+                model.addAttribute("staffList", staffRepository.findAll().stream()
+                    .filter(s -> (s.getUsername() != null && s.getUsername().contains(keyword))
+                              || (s.getName() != null && s.getName().contains(keyword))
+                              || String.valueOf(s.getId()).equals(keyword))
+                    .collect(java.util.stream.Collectors.toList()));
+            }
+        } else {
+            model.addAttribute("residents", residentRepository.findAll());
+            model.addAttribute("staffList", staffRepository.findAll());
+        }
+        return "admin/user-management";
+    }
+
+    @GetMapping("/user/{role}/{id}")
+    @ResponseBody
+    public Object getUserDetail(@PathVariable String role, @PathVariable Long id) {
+        if ("RESIDENT".equals(role)) {
+            return residentRepository.findById(id).orElse(null);
+        } else if ("STAFF".equals(role)) {
+            return staffRepository.findById(id).orElse(null);
+        }
+        return null;
+    }
+
+    @PostMapping("/user/reset-password")
+    public String resetPassword(@RequestParam String role, @RequestParam Long userId, 
+                                @RequestParam String newPassword, @RequestParam String confirmPassword,
+                                HttpSession session, RedirectAttributes ra) {
+        Admin admin = (Admin) session.getAttribute("loggedInAdmin");
+        if (admin == null) {
+            ra.addFlashAttribute("error", "权限不足，请重新登录");
+            return "redirect:/login";
+        }
+        
+        if (newPassword == null || newPassword.length() < 6) {
+            ra.addFlashAttribute("error", "密码长度不能少于6位");
+            return "redirect:/admin/user-management";
+        }
+        
+        if (!newPassword.equals(confirmPassword)) {
+            ra.addFlashAttribute("error", "两次输入的密码不一致");
+            return "redirect:/admin/user-management";
+        }
+        
+        if (!isValidPassword(newPassword)) {
+            ra.addFlashAttribute("error", "密码只能包含字母、数字和下划线");
+            return "redirect:/admin/user-management";
+        }
+        
+        String targetUsername;
+        if ("RESIDENT".equals(role)) {
+            Resident resident = residentRepository.findById(userId).orElse(null);
+            if (resident == null) {
+                ra.addFlashAttribute("error", "用户不存在");
+                return "redirect:/admin/user-management";
+            }
+            targetUsername = resident.getUsername();
+            resident.setPassword(passwordEncoder.encode(newPassword));
+            residentRepository.save(resident);
+            
+            PasswordChangeLog log = new PasswordChangeLog(admin.getUsername(), admin.getId(), 
+                targetUsername, userId, "RESIDENT", "RESET_PASSWORD");
+            passwordChangeLogRepository.save(log);
+            
+        } else if ("STAFF".equals(role)) {
+            Staff staff = staffRepository.findById(userId).orElse(null);
+            if (staff == null) {
+                ra.addFlashAttribute("error", "用户不存在");
+                return "redirect:/admin/user-management";
+            }
+            targetUsername = staff.getUsername();
+            staff.setPassword(passwordEncoder.encode(newPassword));
+            staffRepository.save(staff);
+            
+            PasswordChangeLog log = new PasswordChangeLog(admin.getUsername(), admin.getId(),
+                targetUsername, userId, "STAFF", "RESET_PASSWORD");
+            passwordChangeLogRepository.save(log);
+        } else {
+            ra.addFlashAttribute("error", "无效的用户角色");
+            return "redirect:/admin/user-management";
+        }
+        
+        ra.addFlashAttribute("message", "密码重置成功");
+        return "redirect:/admin/user-management";
+    }
+
+    private boolean isValidPassword(String password) {
+        return password != null && password.matches("^[a-zA-Z0-9_]+$");
     }
 }

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>提交报修 - 智慧物业</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/css/admin.css?v=3}">
+    <link rel="stylesheet" th:href="@{/css/admin.css?v=6}">
 </head>
 <body>
     <div class="sidebar">
@@ -47,8 +47,8 @@
                     <input type="file" name="image" accept="image/*" style="border: none; padding: 0;">
                 </div>
                 
-                <div style="margin-top: 30px;">
-                    <button type="submit" class="btn btn-primary" style="margin-left: 136px; padding: 12px 30px; margin-right: 15px;">提交报修工单</button>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">提交报修工单</button>
                     <a th:href="@{/}" class="btn">取消返回</a>
                 </div>
             </form>

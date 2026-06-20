@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>投诉建议 - 智慧物业</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/css/admin.css?v=3}">
+    <link rel="stylesheet" th:href="@{/css/admin.css?v=6}">
 </head>
 <body>
     <div class="sidebar">
@@ -28,7 +28,7 @@
             <a th:href="@{/complaint/new}" class="btn btn-primary" style="padding: 12px 24px; font-size: 15px;">+ 发起新投诉/建议</a>
         </div>
 
-        <div th:if="${#lists.isEmpty(complaints)}" style="border: 1px solid #ccc; padding: 20px; text-align: center; color: #666;">
+        <div th:if="${#lists.isEmpty(complaints)}" class="empty-state">
             暂无历史投诉与建议记录
         </div>
         

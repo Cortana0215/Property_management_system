@@ -1,0 +1,566 @@
+/**
+ * ========================================
+ * 物业管理系统 - 表单模块化设计规范
+ * ========================================
+ * 统一规范所有功能界面中的表单元素样式
+ */
+
+/* ========================================
+ * 第一部分：设计令牌（Design Tokens）
+ * ======================================== */
+:root {
+    /* 表单颜色系统 */
+    --form-primary: #2563EB;
+    --form-primary-hover: #1D4ED8;
+    --form-primary-light: #EFF6FF;
+    --form-border: #E2E8F0;
+    --form-border-focus: #2563EB;
+    --form-bg: #F8FAFC;
+    --form-bg-focus: #FFFFFF;
+    --form-bg-disabled: #F1F5F9;
+    --form-text: #1E293B;
+    --form-text-muted: #64748B;
+    --form-text-placeholder: #94A3B8;
+    --form-danger: #EF4444;
+    --form-danger-light: #FEE2E2;
+    --form-success: #10B981;
+    --form-success-light: #D1FAE5;
+
+    /* 表单尺寸系统 */
+    --form-label-width: 120px;
+    --form-label-margin: 16px;
+    --form-item-gap: 20px;
+    --form-input-height: 42px;
+    --form-input-min-width: 200px;
+    --form-border-radius: 8px;
+    --form-padding-x: 14px;
+    --form-padding-y: 10px;
+
+    /* 按钮尺寸系统 */
+    --btn-height-sm: 32px;
+    --btn-height-md: 42px;
+    --btn-height-lg: 48px;
+    --btn-padding-x: 24px;
+    --btn-padding-y: 10px;
+    --btn-radius: 8px;
+    --btn-font-size: 14px;
+    --btn-font-weight: 600;
+
+    /* 间距系统 */
+    --space-xs: 8px;
+    --space-sm: 12px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+}
+
+/* ========================================
+ * 第二部分：表单布局系统
+ * ======================================== */
+
+/* 基础表单容器 */
+.form-container {
+    width: 100%;
+}
+
+/* 水平表单布局（标签在左，输入框在右） */
+.form-horizontal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--form-item-gap);
+    align-items: flex-start;
+}
+
+/* 垂直表单布局（标签在上，输入框在下） */
+.form-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: var(--form-item-gap);
+}
+
+/* 单行列表单 */
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    align-items: flex-start;
+}
+
+/* 表单行内的表单项 */
+.form-row .form-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+}
+
+/* 单列全宽表单项 */
+.form-item-full {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: var(--space-md);
+}
+
+/* ========================================
+ * 第三部分：表单项样式
+ * ======================================== */
+
+/* 表单项基础样式 */
+.form-item {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+/* 标签样式 - 右对齐 */
+.form-item label,
+.form-item .form-label {
+    width: var(--form-label-width);
+    min-width: var(--form-label-width);
+    text-align: right;
+    margin-right: var(--form-label-margin);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--form-text-muted);
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+/* 必填标识 */
+.form-item label::before,
+.form-item .form-label::before {
+    content: '';
+}
+
+/* 需要必填标识时添加此类 */
+.form-item label.required::before,
+.form-item .form-label.required::before {
+    content: '*';
+    color: var(--form-danger);
+    margin-right: 4px;
+}
+
+/* 输入框容器 */
+.form-input-wrapper {
+    flex: 1;
+    min-width: var(--form-input-min-width);
+    max-width: 400px;
+}
+
+/* 全宽输入框 */
+.form-input-full {
+    width: 100%;
+    max-width: none;
+}
+
+/* ========================================
+ * 第四部分：输入框样式
+ * ======================================== */
+
+/* 基础输入框 */
+.form-input,
+.form-item input[type="text"],
+.form-item input[type="password"],
+.form-item input[type="number"],
+.form-item input[type="tel"],
+.form-item input[type="email"],
+.form-item input[type="date"],
+.form-item input[type="time"],
+.form-item select {
+    width: 100%;
+    height: var(--form-input-height);
+    padding: var(--form-padding-y) var(--form-padding-x);
+    border: 1px solid var(--form-border);
+    border-radius: var(--form-border-radius);
+    background-color: var(--form-bg);
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--form-text);
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* 输入框焦点状态 */
+.form-input:focus,
+.form-item input[type="text"]:focus,
+.form-item input[type="password"]:focus,
+.form-item input[type="number"]:focus,
+.form-item input[type="tel"]:focus,
+.form-item input[type="email"]:focus,
+.form-item input[type="date"]:focus,
+.form-item input[type="time"]:focus,
+.form-item select:focus {
+    border-color: var(--form-border-focus);
+    background-color: var(--form-bg-focus);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* 输入框禁用状态 */
+.form-input:disabled,
+.form-item input[type="text"]:disabled,
+.form-item input[type="password"]:disabled,
+.form-item input[type="number"]:disabled,
+.form-item input[type="tel"]:disabled,
+.form-item select:disabled {
+    background-color: var(--form-bg-disabled);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* 输入框只读状态 */
+.form-input[readonly],
+.form-item input[readonly] {
+    background-color: var(--form-bg-disabled);
+    cursor: default;
+}
+
+/* 占位符样式 */
+.form-input::placeholder,
+.form-item input::placeholder {
+    color: var(--form-text-placeholder);
+}
+
+/* 文本域样式 */
+textarea.form-input,
+.form-item textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: var(--form-padding-y) var(--form-padding-x);
+    border: 1px solid var(--form-border);
+    border-radius: var(--form-border-radius);
+    background-color: var(--form-bg);
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--form-text);
+    resize: vertical;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+textarea.form-input:focus,
+.form-item textarea:focus {
+    border-color: var(--form-border-focus);
+    background-color: var(--form-bg-focus);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* 文件上传样式 */
+.form-item input[type="file"] {
+    width: 100%;
+    padding: var(--form-padding-y) var(--form-padding-x);
+    border: 1px dashed var(--form-border);
+    border-radius: var(--form-border-radius);
+    background-color: var(--form-bg);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.form-item input[type="file"]:hover {
+    border-color: var(--form-primary);
+    background-color: var(--form-primary-light);
+}
+
+/* ========================================
+ * 第五部分：按钮样式
+ * ======================================== */
+
+/* 按钮基础样式 */
+.form-btn,
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--btn-height-md);
+    padding: var(--form-padding-y) var(--btn-padding-x);
+    font-size: var(--btn-font-size);
+    font-weight: var(--btn-font-weight);
+    font-family: inherit;
+    border-radius: var(--btn-radius);
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    outline: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    gap: 8px;
+}
+
+/* 主按钮 - 蓝色填充 */
+.btn-primary,
+.form-btn-primary {
+    background-color: var(--form-primary);
+    color: #FFFFFF;
+    border: none;
+}
+
+.btn-primary:hover,
+.form-btn-primary:hover {
+    background-color: var(--form-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.btn-primary:active,
+.form-btn-primary:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* 次按钮 - 白色填充带边框 */
+.btn-secondary,
+.btn,
+.form-btn-secondary {
+    background-color: #FFFFFF;
+    color: var(--form-text);
+    border: 1px solid var(--form-border);
+}
+
+.btn-secondary:hover,
+.btn:hover,
+.form-btn-secondary:hover {
+    background-color: var(--form-bg);
+    border-color: #CBD5E1;
+    transform: translateY(-1px);
+}
+
+/* 危险按钮 - 红色填充 */
+.btn-danger,
+.form-btn-danger {
+    background-color: var(--form-danger);
+    color: #FFFFFF;
+    border: none;
+}
+
+.btn-danger:hover,
+.form-btn-danger:hover {
+    background-color: #DC2626;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+}
+
+/* 成功按钮 - 绿色填充 */
+.btn-success,
+.form-btn-success {
+    background-color: var(--form-success);
+    color: #FFFFFF;
+    border: none;
+}
+
+.btn-success:hover,
+.form-btn-success:hover {
+    background-color: #059669;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+
+/* 按钮尺寸变体 */
+.btn-sm {
+    height: var(--btn-height-sm);
+    padding: 6px 16px;
+    font-size: 13px;
+}
+
+.btn-lg {
+    height: var(--btn-height-lg);
+    padding: 14px 32px;
+    font-size: 16px;
+}
+
+/* 按钮禁用状态 */
+.btn:disabled,
+.btn-primary:disabled,
+.btn-secondary:disabled,
+.btn-danger:disabled,
+.btn-success:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* 按钮加载状态 */
+.btn-loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: btn-spin 0.6s linear infinite;
+}
+
+@keyframes btn-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ========================================
+ * 第六部分：表单操作区（按钮组）
+ * ======================================== */
+
+/* 表单底部操作区 */
+.form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-md);
+    margin-top: var(--space-lg);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--form-border);
+}
+
+/* 表单操作区内按钮左对齐 */
+.form-actions-left {
+    justify-content: flex-start;
+}
+
+/* 表单操作区按钮居中 */
+.form-actions-center {
+    justify-content: center;
+}
+
+/* 水平表单内的操作区 */
+.form-horizontal .form-actions {
+    width: 100%;
+    padding-left: calc(var(--form-label-width) + var(--form-label-margin));
+    box-sizing: border-box;
+}
+
+/* ========================================
+ * 第七部分：表单状态与反馈
+ * ======================================== */
+
+/* 成功状态 */
+.form-item.is-success input,
+.form-item.is-success select,
+.form-item.is-success textarea {
+    border-color: var(--form-success);
+    background-color: var(--form-success-light);
+}
+
+/* 错误状态 */
+.form-item.is-error input,
+.form-item.is-error select,
+.form-item.is-error textarea {
+    border-color: var(--form-danger);
+    background-color: var(--form-danger-light);
+}
+
+/* 错误提示信息 */
+.form-error {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--form-danger);
+}
+
+/* 成功提示信息 */
+.form-success {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--form-success);
+}
+
+/* 帮助提示 */
+.form-hint {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--form-text-muted);
+}
+
+/* ========================================
+ * 第八部分：内联表单与特殊布局
+ * ======================================== */
+
+/* 内联表单 - 标签和输入框在一行 */
+.form-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.form-inline label {
+    width: auto;
+    text-align: left;
+    margin-right: 8px;
+    white-space: nowrap;
+}
+
+/* 紧凑表单 */
+.form-compact .form-item {
+    margin-bottom: var(--space-sm);
+}
+
+.form-compact .form-row {
+    gap: var(--space-sm);
+    margin-bottom: var(--space-sm);
+}
+
+/* 卡片内表单 */
+.card .form-container {
+    padding: 0;
+}
+
+/* ========================================
+ * 第九部分：响应式适配
+ * ======================================== */
+
+/* 平板端适配 */
+@media (max-width: 1024px) {
+    .form-horizontal {
+        flex-direction: column;
+    }
+
+    .form-item label,
+    .form-item .form-label {
+        width: 100%;
+        text-align: left;
+        margin-bottom: 8px;
+        margin-right: 0;
+    }
+
+    .form-input-wrapper {
+        width: 100%;
+        max-width: none;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .form-actions .btn {
+        width: 100%;
+    }
+}
+
+/* 移动端适配 */
+@media (max-width: 640px) {
+    :root {
+        --form-label-width: 100%;
+        --form-item-gap: 16px;
+        --form-input-height: 40px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+}

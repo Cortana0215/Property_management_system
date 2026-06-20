@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>考勤管理 - 物业管理系统</title>
-    <link rel="stylesheet" th:href="@{/css/admin.css?v=2}">
+    <link rel="stylesheet" th:href="@{/css/admin.css?v=7}">
 </head>
 <body>
     
@@ -23,6 +23,7 @@
             <a th:href="@{/admin/admins}">管理员账号</a>
             <a th:href="@{/admin/repairs}">报修任务</a>
             <a th:href="@{/attendance/records}" class="active">考勤管理</a>
+            <a th:href="@{/admin/user-management}">用户账号管理</a>
             <a th:href="@{/logout}" style="margin-top: 40px; color: #f56565;">退出系统</a>
         </div>
     </div>
@@ -32,34 +33,49 @@
         <h1>考勤记录管理</h1>
 
         <div class="card">
-            <div class="card-title">考勤报表</div>
+            <div class="card-title">
+                考勤报表
+                <div class="card-actions">
+                    <label class="select-all-checkbox">
+                        <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                        <span>全选</span>
+                    </label>
+                    <button type="button" class="btn btn-danger btn-sm" id="batchDeleteBtn" onclick="batchDelete()" disabled>
+                        批量删除 (<span id="selectedCount">0</span>)
+                    </button>
+                </div>
+            </div>
             <table>
                 <thead>
                     <tr>
+                        <th style="width: 40px;"></th>
                         <th>ID</th>
                         <th>姓名</th>
                         <th>角色</th>
                         <th>上班打卡时间</th>
                         <th>下班打卡时间</th>
                         <th>状态</th>
+                        <th style="width: 100px;">操作</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:each="record : ${records}">
+                        <td>
+                            <input type="checkbox" class="record-checkbox" th:value="${record.id}" onchange="updateSelectedCount()">
+                        </td>
                         <td th:text="${record.id}"></td>
                         <td th:text="${record.userName}"></td>
                         <td th:text="${record.userRole == 'ADMIN' ? '管理员' : '职工'}"></td>
                         <td>
                             <span th:text="${#temporals.format(record.clockInTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
                             <span th:class="${record.clockInStatus == '迟到' ? 'status-tag status-pending' : 'status-tag status-completed'}" 
-                                  th:text="${record.clockInStatus}" style="font-size: 11px; padding: 2px 6px; margin-left: 5px;"></span>
+                                  th:text="${record.clockInStatus}" class="status-tag-sm"></span>
                         </td>
                         <td>
                             <div th:if="${record.clockOutTime != null}">
                                 <span th:text="${#temporals.format(record.clockOutTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
                                 <span th:class="${record.clockOutStatus == '早退' ? 'status-tag status-pending' : 'status-tag status-completed'}" 
-                                      th:text="${record.clockOutStatus}" style="font-size: 11px; padding: 2px 6px; margin-left: 5px; background-color: #FED7D7; color: #822727;"
-                                      th:styleappend="${record.clockOutStatus == '正常' ? 'background-color: #C6F6D5; color: #22543D;' : ''}"></span>
+                                      th:text="${record.clockOutStatus}" class="status-tag-sm"></span>
                             </div>
                             <span th:unless="${record.clockOutTime != null}">-</span>
                         </td>
@@ -67,10 +83,292 @@
                             <span th:if="${record.clockOutTime != null}" class="status-tag status-completed">已结转</span>
                             <span th:if="${record.clockOutTime == null}" class="status-tag status-assigned">在岗中</span>
                         </td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm" th:onclick="'deleteRecord(' + ${record.id} + ')'">删除</button>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(records)}">
+                        <td colspan="8" class="empty-cell">暂无考勤记录</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
+
+    <!-- 删除确认弹窗 -->
+    <div id="confirmModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>确认删除</h3>
+                <span class="modal-close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">确定要删除这条考勤记录吗？</p>
+                <p class="warning-text">删除操作不可撤销，记录将被保留在数据库中以供备查。</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" onclick="closeModal()">取消</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">确认删除</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 操作结果提示 -->
+    <div id="toast" class="toast" style="display: none;">
+        <div class="toast-content">
+            <span id="toastMessage"></span>
+        </div>
+    </div>
+
+    <style>
+        .card-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-left: auto;
+        }
+        .select-all-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: normal;
+            color: var(--text-muted);
+        }
+        .select-all-checkbox input {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        .record-checkbox {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        .empty-cell {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 30px !important;
+        }
+        .btn-danger {
+            background: #DC2626;
+            color: white;
+            border: none;
+        }
+        .btn-danger:hover {
+            background: #B91C1C;
+        }
+        .status-tag-sm {
+            font-size: 11px;
+            padding: 2px 6px;
+            margin-left: 5px;
+        }
+        /* 弹窗样式 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 420px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .modal-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .modal-close {
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+        .modal-close:hover {
+            color: var(--text-main);
+        }
+        .modal-body {
+            padding: 20px;
+        }
+        .modal-body p {
+            margin: 0 0 10px 0;
+        }
+        .warning-text {
+            color: var(--text-muted) !important;
+            font-size: 13px;
+        }
+        .modal-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1001;
+        }
+        .toast-content {
+            background: #1F2937;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        .toast.success .toast-content {
+            background: #059669;
+        }
+        .toast.error .toast-content {
+            background: #DC2626;
+        }
+    </style>
+
+    <script>
+        let pendingDeleteId = null;
+        let isBatchDelete = false;
+
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('.record-checkbox');
+            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+            updateSelectedCount();
+        }
+
+        function updateSelectedCount() {
+            const checkboxes = document.querySelectorAll('.record-checkbox:checked');
+            const count = checkboxes.length;
+            document.getElementById('selectedCount').textContent = count;
+            document.getElementById('batchDeleteBtn').disabled = count === 0;
+            
+            // 更新全选状态
+            const allCheckboxes = document.querySelectorAll('.record-checkbox');
+            const selectAll = document.getElementById('selectAll');
+            selectAll.checked = allCheckboxes.length > 0 && checkboxes.length === allCheckboxes.length;
+            selectAll.indeterminate = checkboxes.length > 0 && checkboxes.length < allCheckboxes.length;
+        }
+
+        function deleteRecord(id) {
+            pendingDeleteId = id;
+            isBatchDelete = false;
+            document.getElementById('confirmMessage').textContent = '确定要删除这条考勤记录吗？';
+            document.getElementById('confirmDeleteBtn').textContent = '确认删除';
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+
+        function batchDelete() {
+            const checkboxes = document.querySelectorAll('.record-checkbox:checked');
+            const count = checkboxes.length;
+            if (count === 0) return;
+            
+            pendingDeleteId = Array.from(checkboxes).map(cb => parseInt(cb.value));
+            isBatchDelete = true;
+            document.getElementById('confirmMessage').textContent = '确定要删除选中的 ' + count + ' 条考勤记录吗？';
+            document.getElementById('confirmDeleteBtn').textContent = '确认删除 (' + count + ')';
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+            pendingDeleteId = null;
+            isBatchDelete = false;
+        }
+
+        function showToast(message, type) {
+            const toast = document.getElementById('toast');
+            toast.className = 'toast ' + type;
+            document.getElementById('toastMessage').textContent = message;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+            const btn = this;
+            btn.disabled = true;
+            btn.textContent = '删除中...';
+
+            if (isBatchDelete) {
+                // 批量删除
+                fetch('/attendance/delete-batch', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'ids=' + pendingDeleteId.join('&ids=')
+                })
+                .then(res => res.json())
+                .then(data => {
+                    closeModal();
+                    if (data.success) {
+                        showToast(data.message, 'success');
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        showToast(data.message, 'error');
+                        btn.disabled = false;
+                        btn.textContent = '确认删除';
+                    }
+                })
+                .catch(err => {
+                    closeModal();
+                    showToast('删除失败：' + err.message, 'error');
+                    btn.disabled = false;
+                    btn.textContent = '确认删除';
+                });
+            } else {
+                // 单条删除
+                fetch('/attendance/delete/' + pendingDeleteId, {
+                    method: 'POST'
+                })
+                .then(res => res.json())
+                .then(data => {
+                    closeModal();
+                    if (data.success) {
+                        showToast(data.message, 'success');
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        showToast(data.message, 'error');
+                        btn.disabled = false;
+                        btn.textContent = '确认删除';
+                    }
+                })
+                .catch(err => {
+                    closeModal();
+                    showToast('删除失败：' + err.message, 'error');
+                    btn.disabled = false;
+                    btn.textContent = '确认删除';
+                });
+            }
+        });
+
+        // 点击弹窗背景关闭
+        document.getElementById('confirmModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>房屋管理 - 物业管理系统</title>
-    <link rel="stylesheet" th:href="@{/css/admin.css?v=2}">
+    <link rel="stylesheet" th:href="@{/css/admin.css?v=6}">
 </head>
 <body>
     
@@ -23,6 +23,7 @@
             <a th:href="@{/admin/admins}">管理员账号</a>
             <a th:href="@{/admin/repairs}">报修任务</a>
             <a th:href="@{/attendance/records}">考勤管理</a>
+            <a th:href="@{/admin/user-management}">用户账号管理</a>
             <a th:href="@{/logout}" style="margin-top: 40px; color: #f56565;">退出系统</a>
         </div>
     </div>
@@ -33,27 +34,31 @@
 
         <div class="card">
             <div class="card-title">新增房屋</div>
-            <form th:action="@{/admin/rooms/add}" method="post" class="form-row">
-                <div class="form-group">
-                    <label>所属楼栋</label>
-                    <select name="buildingId" required>
-                        <option value="">请选择...</option>
-                        <option th:each="b : ${buildings}" th:value="${b.id}" th:text="${b.name}" th:selected="${selectedBuilding != null && b.id == selectedBuilding.id}"></option>
-                    </select>
+            <form th:action="@{/admin/rooms/add}" method="post">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>所属楼栋</label>
+                        <select name="buildingId" required>
+                            <option value="">请选择...</option>
+                            <option th:each="b : ${buildings}" th:value="${b.id}" th:text="${b.name}" th:selected="${selectedBuilding != null && b.id == selectedBuilding.id}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>单元</label>
+                        <input type="text" name="unitNumber" placeholder="如：1单元" required>
+                    </div>
+                    <div class="form-group">
+                        <label>房号</label>
+                        <input type="text" name="roomNumber" placeholder="如：101" required>
+                    </div>
+                    <div class="form-group">
+                        <label>建筑面积 (㎡)</label>
+                        <input type="number" step="0.01" name="area" placeholder="0.00" required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>单元</label>
-                    <input type="text" name="unitNumber" placeholder="如：1单元" required>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">保存房屋</button>
                 </div>
-                <div class="form-group">
-                    <label>房号</label>
-                    <input type="text" name="roomNumber" placeholder="如：101" required>
-                </div>
-                <div class="form-group">
-                    <label>建筑面积 (㎡)</label>
-                    <input type="number" step="0.01" name="area" placeholder="0.00" required>
-                </div>
-                <button type="submit" class="btn btn-primary" style="height: 34px;">保存房屋</button>
             </form>
         </div>
 

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户账号管理</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css?v=6}">
+    <style>
+        .search-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .search-bar input, .search-bar select {
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            background-color: #F8FAFC;
+        }
+        .search-bar input[type="text"] {
+            flex: 1;
+            min-width: 200px;
+        }
+        .search-bar select {
+            min-width: 120px;
+        }
+        .user-section {
+            margin-bottom: 32px;
+        }
+        .user-section h2 {
+            font-size: 18px;
+            color: var(--text-main);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .user-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .user-info .username {
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--text-main);
+        }
+        .user-info .details {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .role-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .role-resident { background: #DBEAFE; color: #1D4ED8; }
+        .role-staff { background: #D1FAE5; color: #047857; }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            padding: 32px;
+            max-width: 480px;
+            width: 90%;
+        }
+        .modal-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .password-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .password-input-wrapper input {
+            flex: 1;
+            padding-right: 40px;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 18px;
+            padding: 4px;
+        }
+        .toggle-password:hover {
+            color: var(--primary-color);
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            justify-content: flex-end;
+        }
+        .log-table {
+            width: 100%;
+            margin-top: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+        .log-table th, .log-table td {
+            padding: 12px 14px;
+            text-align: center;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border-color);
+            word-wrap: break-word;
+            vertical-align: middle;
+        }
+        .log-table th {
+            background-color: #F8FAFC;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+        .log-table tr:last-child td {
+            border-bottom: none;
+        }
+        .log-table tr:hover td {
+            background-color: #F1F5F9;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>物业管理系统</h2>
+        </div>
+        <div class="sidebar-menu">
+            <a th:href="@{/admin/dashboard}">仪表盘</a>
+            <a th:href="@{/admin/buildings}">楼栋管理</a>
+            <a th:href="@{/admin/rooms}">房屋管理</a>
+            <a th:href="@{/admin/residents}">住户管理</a>
+            <a th:href="@{/admin/staff}">职工管理</a>
+            <a th:href="@{/admin/notices}">公告管理</a>
+            <a th:href="@{/admin/complaints}">投诉管理</a>
+            <a th:href="@{/admin/admins}">管理员账号</a>
+            <a th:href="@{/admin/repairs}">报修任务</a>
+            <a th:href="@{/attendance/records}">考勤管理</a>
+            <a th:href="@{/admin/user-management}" class="active">用户账号管理</a>
+            <a th:href="@{/logout}" style="margin-top: 40px; color: #f56565;">退出系统</a>
+        </div>
+    </div>
+    
+    <div class="content">
+        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        
+        <h1>用户账号管理</h1>
+        
+        <div class="card">
+            <div class="card-title">搜索用户</div>
+            <form th:action="@{/admin/user-management}" method="get" class="search-bar">
+                <input type="text" name="keyword" placeholder="输入用户名、姓名或用户ID搜索..." th:value="${keyword}">
+                <select name="role">
+                    <option value="">全部角色</option>
+                    <option value="RESIDENT" th:selected="${role == 'RESIDENT'}">住户</option>
+                    <option value="STAFF" th:selected="${role == 'STAFF'}">职工</option>
+                </select>
+                <button type="submit" class="btn btn-primary">搜索</button>
+                <a th:href="@{/admin/user-management}" class="btn">重置</a>
+            </form>
+        </div>
+        
+        <div class="user-section" th:if="${residents != null and not #lists.isEmpty(residents)}">
+            <h2>住户用户</h2>
+            <div th:each="resident : ${residents}" class="user-card">
+                <div class="user-info">
+                    <span class="username">
+                        <span th:text="${resident.username}">username</span>
+                        <span class="role-tag role-resident">住户</span>
+                    </span>
+                    <span class="details">
+                        姓名: <span th:text="${resident.name}">name</span> | 
+                        手机: <span th:text="${resident.phone}">phone</span> | 
+                        房号: <span th:text="${resident.apartmentNumber}">apt</span> | 
+                        ID: <span th:text="${resident.id}">id</span>
+                    </span>
+                </div>
+                <button class="btn btn-primary reset-password-btn" th:attr="data-role='RESIDENT', data-user-id=${resident.id}, data-username=${resident.username}">重置密码</button>
+            </div>
+        </div>
+        
+        <div class="user-section" th:if="${staffList != null and not #lists.isEmpty(staffList)}">
+            <h2>职工用户</h2>
+            <div th:each="staff : ${staffList}" class="user-card">
+                <div class="user-info">
+                    <span class="username">
+                        <span th:text="${staff.username}">username</span>
+                        <span class="role-tag role-staff">职工</span>
+                    </span>
+                    <span class="details">
+                        姓名: <span th:text="${staff.name}">name</span> | 
+                        手机: <span th:text="${staff.phone}">phone</span> | 
+                        ID: <span th:text="${staff.id}">id</span>
+                    </span>
+                </div>
+                <button class="btn btn-primary reset-password-btn" th:attr="data-role='STAFF', data-user-id=${staff.id}, data-username=${staff.username}">重置密码</button>
+            </div>
+        </div>
+        
+        <div class="empty-state" th:if="${(residents == null or #lists.isEmpty(residents)) and (staffList == null or #lists.isEmpty(staffList))}">
+            <p>没有找到匹配的用户</p>
+        </div>
+        
+        <div class="card log-table" th:if="${passwordLogs != null and not #lists.isEmpty(passwordLogs)}">
+            <div class="card-title">密码修改日志</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>操作时间</th>
+                        <th>操作管理员</th>
+                        <th>目标用户</th>
+                        <th>目标角色</th>
+                        <th>操作类型</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="log : ${passwordLogs}">
+                        <td th:text="${#temporals.format(log.changeTime, 'yyyy-MM-dd HH:mm:ss')}">time</td>
+                        <td th:text="${log.adminUsername}">admin</td>
+                        <td th:text="${log.targetUsername}">target</td>
+                        <td>
+                            <span th:class="${log.targetUserRole == 'RESIDENT' ? 'role-tag role-resident' : 'role-tag role-staff'}" 
+                                  th:text="${log.targetUserRole == 'RESIDENT' ? '住户' : '职工'}">role</span>
+                        </td>
+                        <td th:text="${log.actionType == 'RESET_PASSWORD' ? '密码重置' : log.actionType}">action</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div id="resetPasswordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">重置用户密码</div>
+            <p style="margin-bottom: 20px; color: var(--text-muted);">
+                当前操作用户: <strong id="modalUsername"></strong>
+            </p>
+            <form th:action="@{/admin/user/reset-password}" method="post" id="resetForm">
+                <input type="hidden" name="role" id="modalRole">
+                <input type="hidden" name="userId" id="modalUserId">
+                
+                <div class="form-group" style="flex-direction: column; align-items: flex-start;">
+                    <label for="newPassword" style="width: auto; text-align: left; margin-bottom: 8px;">新密码</label>
+                    <div class="password-input-wrapper" style="width: 100%;">
+                        <input type="password" id="newPassword" name="newPassword" required minlength="6" placeholder="请输入新密码（至少6位）">
+                        <button type="button" class="toggle-password" onclick="togglePassword('newPassword')">显示</button>
+                    </div>
+                </div>
+                
+                <div class="form-group" style="flex-direction: column; align-items: flex-start;">
+                    <label for="confirmPassword" style="width: auto; text-align: left; margin-bottom: 8px;">确认密码</label>
+                    <div class="password-input-wrapper" style="width: 100%;">
+                        <input type="password" id="confirmPassword" name="confirmPassword" required minlength="6" placeholder="请再次输入新密码">
+                        <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword')">显示</button>
+                    </div>
+                </div>
+                
+                <div id="passwordError" style="color: #EF4444; font-size: 13px; margin-bottom: 16px; display: none;"></div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn" onclick="closeModal()">取消</button>
+                    <button type="submit" class="btn btn-primary" onclick="return validateForm()">确认重置</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.reset-password-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var role = this.getAttribute('data-role');
+                    var userId = this.getAttribute('data-user-id');
+                    var username = this.getAttribute('data-username');
+                    openResetModal(role, userId, username);
+                });
+            });
+        });
+        
+        function openResetModal(role, userId, username) {
+            document.getElementById('modalRole').value = role;
+            document.getElementById('modalUserId').value = userId;
+            document.getElementById('modalUsername').textContent = username;
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            document.getElementById('passwordError').style.display = 'none';
+            document.getElementById('resetPasswordModal').classList.add('active');
+        }
+        
+        function closeModal() {
+            document.getElementById('resetPasswordModal').classList.remove('active');
+        }
+        
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const button = input.nextElementSibling;
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.textContent = '隐藏';
+            } else {
+                input.type = 'password';
+                button.textContent = '显示';
+            }
+        }
+        
+        function validateForm() {
+            const newPwd = document.getElementById('newPassword').value;
+            const confirmPwd = document.getElementById('confirmPassword').value;
+            const errorDiv = document.getElementById('passwordError');
+            
+            if (newPwd.length < 6) {
+                errorDiv.textContent = '密码长度不能少于6位';
+                errorDiv.style.display = 'block';
+                return false;
+            }
+            
+            if (!/^[a-zA-Z0-9_]+$/.test(newPwd)) {
+                errorDiv.textContent = '密码只能包含字母、数字和下划线';
+                errorDiv.style.display = 'block';
+                return false;
+            }
+            
+            if (newPwd !== confirmPwd) {
+                errorDiv.textContent = '两次输入的密码不一致';
+                errorDiv.style.display = 'block';
+                return false;
+            }
+            
+            return true;
+        }
+        
+        document.getElementById('resetPasswordModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

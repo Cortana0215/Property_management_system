@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>我的考勤 - 物业管理系统</title>
-    <link rel="stylesheet" th:href="@{/css/admin.css?v=3}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/admin.css?v=6}">
 </head>
 <body>
     
@@ -41,14 +42,13 @@
                         <td>
                             <span th:text="${#temporals.format(record.clockInTime, 'HH:mm:ss')}"></span>
                             <span th:class="${record.clockInStatus == '迟到' ? 'status-tag status-pending' : 'status-tag status-completed'}" 
-                                  th:text="${record.clockInStatus}" style="font-size: 11px; padding: 2px 6px; margin-left: 5px;"></span>
+                                  th:text="${record.clockInStatus}" class="status-tag-sm"></span>
                         </td>
                         <td>
                             <div th:if="${record.clockOutTime != null}">
                                 <span th:text="${#temporals.format(record.clockOutTime, 'HH:mm:ss')}"></span>
                                 <span th:class="${record.clockOutStatus == '早退' ? 'status-tag status-pending' : 'status-tag status-completed'}" 
-                                      th:text="${record.clockOutStatus}" style="font-size: 11px; padding: 2px 6px; margin-left: 5px; background-color: #FED7D7; color: #822727;"
-                                      th:styleappend="${record.clockOutStatus == '正常' ? 'background-color: #C6F6D5; color: #22543D;' : ''}"></span>
+                                      th:text="${record.clockOutStatus}" class="status-tag-sm"></span>
                             </div>
                             <span th:unless="${record.clockOutTime != null}">-</span>
                         </td>

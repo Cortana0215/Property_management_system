@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>住户服务门户 - 智慧物业</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/css/admin.css?v=3}">
+    <link rel="stylesheet" th:href="@{/css/admin.css?v=6}">
 </head>
 <body>
     <div class="sidebar">
@@ -56,7 +56,7 @@
         <!-- 社区公告展示区 -->
         <div class="card" style="margin-bottom: 30px;" th:if="${notices != null && !#lists.isEmpty(notices)}">
             <h3 style="border-bottom: 2px solid #ccc; padding-bottom: 10px;">最新社区公告</h3>
-            <div th:each="n : ${notices}" style="background: white; border: 1px solid #ccc; padding: 15px; margin-bottom: 15px;">
+            <div th:each="n : ${notices}" class="notice-card">
                 <h4 style="margin: 0 0 10px 0; color: #0056b3;" th:text="${n.title}"></h4>
                 <div style="font-size: 12px; color: #666; margin-bottom: 10px;">
                     发布时间：<span th:if="${n.createTime != null}" th:text="${#temporals.format(n.createTime, 'yyyy-MM-dd HH:mm')}"></span><span th:unless="${n.createTime != null}">-</span>
@@ -68,7 +68,7 @@
         <!-- 报修记录 -->
         <div class="request-list">
             <h3 style="border-bottom: 2px solid #ccc; padding-bottom: 10px;">近期报修进度</h3>
-            <div th:if="${#lists.isEmpty(myRequests)}" style="border: 1px solid #ccc; padding: 20px; text-align: center; color: #666;">
+            <div th:if="${#lists.isEmpty(myRequests)}" class="empty-state">
                 目前没有报修记录
             </div>
             <div th:each="req : ${myRequests}" class="card">
@@ -96,7 +96,9 @@
                             <div class="form-group">
                                 <textarea name="feedback" placeholder="写下您的评价内容..." rows="2"></textarea>
                             </div>
-                            <button type="submit" class="btn-primary">提交评价</button>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">提交评价</button>
+                            </div>
                         </form>
                     </div>
                     <div th:if="${req.rating != null}" style="margin-top: 10px; font-size: 14px; color: #28a745;">

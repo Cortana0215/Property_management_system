@@ -8,8 +8,6 @@
     --border-color: #E2E8F0;
     --radius: 16px;
     --radius-sm: 10px;
-    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.025);
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 body {
@@ -28,7 +26,6 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: var(--shadow-sm);
     border-bottom: 1px solid var(--border-color);
 }
 
@@ -43,7 +40,6 @@ body {
     text-decoration: none;
     color: var(--user-text);
     font-weight: 500;
-    transition: color 0.2s;
 }
 
 .navbar a:hover {
@@ -60,18 +56,8 @@ body {
     background: var(--user-card);
     padding: 30px;
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
     margin-bottom: 30px;
     border: 1px solid var(--border-color);
-    position: relative;
-    overflow: hidden;
-}
-
-.welcome-card::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; right: 0; height: 6px;
-    background: linear-gradient(90deg, #2563EB, #60A5FA);
 }
 
 .welcome-text h2 {
@@ -114,15 +100,7 @@ body {
     text-align: center;
     text-decoration: none;
     color: var(--user-text);
-    box-shadow: var(--shadow-sm);
-    transition: all 0.3s;
     border: 1px solid var(--border-color);
-}
-
-.action-tile:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow);
-    border-color: #BFDBFE;
 }
 
 .action-tile h3 {
@@ -145,12 +123,6 @@ body {
     padding: 20px;
     margin-bottom: 16px;
     position: relative;
-    box-shadow: var(--shadow-sm);
-    transition: box-shadow 0.2s;
-}
-
-.request-card:hover {
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
 }
 
 .request-card h3 {
@@ -187,13 +159,10 @@ body {
     font-size: 14px;
     font-weight: 500;
     border-radius: var(--radius-sm);
-    transition: all 0.2s;
-    box-shadow: none; 
 }
 
 .btn-primary:hover, .btn:hover {
     background-color: var(--user-primary-hover);
-    transform: translateY(-1px);
 }
 
 .btn-danger {
@@ -246,7 +215,6 @@ input[type="text"], input[type="password"], input[type="tel"], input[type="numbe
     box-sizing: border-box;
     border-radius: var(--radius-sm);
     outline: none;
-    transition: all 0.2s;
 }
 
 .form-control-static {
@@ -259,14 +227,12 @@ input[type="text"], input[type="password"], input[type="tel"], input[type="numbe
 input:focus, select:focus, textarea:focus {
     border-color: var(--user-primary);
     background-color: #FFF;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
 .form-container-centered {
     background: var(--user-card);
     padding: 40px;
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
     max-width: 600px;
     margin: 0 auto;
 }
