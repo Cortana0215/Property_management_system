@@ -9,6 +9,7 @@ import com.example.propertymanagement.repository.RepairRequestRepository;
 import com.example.propertymanagement.repository.ResidentRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +39,9 @@ public class UserController {
 
     @Autowired
     private ComplaintRepository complaintRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private final String UPLOAD_DIR = "uploads/";
 
@@ -76,7 +80,7 @@ public class UserController {
                 resident.setName(updatedResident.getName());
                 resident.setPhone(updatedResident.getPhone());
                 if (updatedResident.getPassword() != null && !updatedResident.getPassword().isEmpty()) {
-                    resident.setPassword(updatedResident.getPassword());
+                    resident.setPassword(passwordEncoder.encode(updatedResident.getPassword()));
                 }
                 residentRepository.save(resident);
                 session.setAttribute("loggedInUser", resident);

@@ -4,6 +4,7 @@ import com.example.propertymanagement.entity.*;
 import com.example.propertymanagement.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,11 +19,15 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private RoomRepository roomRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public void run(String... args) throws Exception {
         // 1. 初始化唯一超级管理员 (避免系统无法登录)
         if (adminRepository.count() == 0) {
-            adminRepository.save(new Admin("admin", "123456"));
+            String encodedPassword = passwordEncoder.encode("123456");
+            adminRepository.save(new Admin("admin", encodedPassword));
             System.out.println("系统初始化：已创建默认管理员账户 (admin/123456)");
         }
 

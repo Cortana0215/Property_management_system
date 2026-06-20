@@ -4,6 +4,7 @@ import com.example.propertymanagement.entity.*;
 import com.example.propertymanagement.repository.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +44,9 @@ public class AdminController {
     @Autowired
     private AttendanceRepository attendanceRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {
         Admin admin = (Admin) session.getAttribute("loggedInAdmin");
@@ -70,6 +74,9 @@ public class AdminController {
 
     @PostMapping("/residents/add")
     public String addResident(@ModelAttribute Resident resident) {
+        if (resident.getPassword() != null && !resident.getPassword().isEmpty()) {
+            resident.setPassword(passwordEncoder.encode(resident.getPassword()));
+        }
         residentRepository.save(resident);
         return "redirect:/admin/residents";
     }
@@ -167,6 +174,9 @@ public class AdminController {
 
     @PostMapping("/staff/add")
     public String addStaff(@ModelAttribute Staff staff) {
+        if (staff.getPassword() != null && !staff.getPassword().isEmpty()) {
+            staff.setPassword(passwordEncoder.encode(staff.getPassword()));
+        }
         staffRepository.save(staff);
         return "redirect:/admin/staff";
     }
@@ -186,6 +196,9 @@ public class AdminController {
 
     @PostMapping("/admins/add")
     public String addAdmin(@ModelAttribute Admin admin) {
+        if (admin.getPassword() != null && !admin.getPassword().isEmpty()) {
+            admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+        }
         adminRepository.save(admin);
         return "redirect:/admin/admins";
     }

@@ -8,6 +8,7 @@ import com.example.propertymanagement.repository.ResidentRepository;
 import com.example.propertymanagement.repository.StaffRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,9 @@ public class AuthController {
 
     @Autowired
     private StaffRepository staffRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("/login")
     public String loginForm() {
@@ -44,21 +48,21 @@ public class AuthController {
                               HttpSession session, Model model) {
         if ("ADMIN".equals(role)) {
             Admin admin = adminRepository.findByUsername(username);
-            if (admin != null && admin.getPassword().equals(password)) {
+            if (admin != null && passwordEncoder.matches(password, admin.getPassword())) {
                 session.setAttribute("loggedInAdmin", admin);
                 session.setAttribute("role", "ADMIN");
                 return "redirect:/admin/dashboard";
             }
         } else if ("RESIDENT".equals(role)) {
             Resident resident = residentRepository.findByUsername(username);
-            if (resident != null && resident.getPassword().equals(password)) {
+            if (resident != null && passwordEncoder.matches(password, resident.getPassword())) {
                 session.setAttribute("loggedInUser", resident);
                 session.setAttribute("role", "RESIDENT");
                 return "redirect:/";
             }
         } else if ("STAFF".equals(role)) {
             Staff staff = staffRepository.findByUsername(username);
-            if (staff != null && staff.getPassword().equals(password)) {
+            if (staff != null && passwordEncoder.matches(password, staff.getPassword())) {
                 session.setAttribute("loggedInStaff", staff);
                 session.setAttribute("role", "STAFF");
                 return "redirect:/staff/dashboard";

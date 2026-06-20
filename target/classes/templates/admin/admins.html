@@ -64,7 +64,7 @@
                 <tbody>
                     <tr th:each="admin : ${admins}">
                         <td th:text="${admin.id}"></td>
-                        <td><strong th:text="${admin.username}"></strong></td>
+                        <td th:text="${admin.username}"></td>
                         <td>
                             <span th:if="${admin.username == 'admin'}" style="color: #999;">系统预设</span>
                             <form th:unless="${admin.username == 'admin'}" th:action="@{/admin/admins/delete/{id}(id=${admin.id})}" method="post">

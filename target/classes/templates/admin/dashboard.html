@@ -51,21 +51,23 @@
 
         <div class="card">
             <div class="card-title">今日考勤</div>
-            <div th:if="${activeAttendance == null}">
-                <p>您当前处于 <strong>离岗</strong> 状态。</p>
-                <form th:action="@{/attendance/clock-in}" method="post" style="margin-left: 0;">
+            <div th:if="${activeAttendance == null}" style="display: flex; align-items: center; justify-content: space-between;">
+                <span>您当前处于 <strong>离岗</strong> 状态。</span>
+                <form th:action="@{/attendance/clock-in}" method="post">
                     <button type="submit" class="btn btn-primary attendance-btn">打卡上班</button>
                 </form>
             </div>
             <div th:if="${activeAttendance != null}">
-                <p>您当前处于 <strong>在岗</strong> 状态。</p>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                    <span>您当前处于 <strong>在岗</strong> 状态。</span>
+                    <form th:action="@{/attendance/clock-out}" method="post">
+                        <button type="submit" class="btn btn-primary attendance-btn" style="background: linear-gradient(135deg, #718096 0%, #4A5568 100%);">打卡下班</button>
+                    </form>
+                </div>
                 <p>上班打卡时间：<span th:text="${#temporals.format(activeAttendance.clockInTime, 'yyyy-MM-dd HH:mm:ss')}"></span> 
                    <span th:class="${activeAttendance.clockInStatus == '迟到' ? 'status-tag status-pending' : 'status-tag status-completed'}" 
                          th:text="${activeAttendance.clockInStatus}"></span>
                 </p>
-                <form th:action="@{/attendance/clock-out}" method="post" style="margin-left: 0;">
-                    <button type="submit" class="btn btn-primary attendance-btn" style="background: linear-gradient(135deg, #718096 0%, #4A5568 100%);">打卡下班</button>
-                </form>
             </div>
         </div>
 
